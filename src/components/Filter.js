@@ -17,7 +17,6 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {withNavigation, SafeAreaView} from 'react-navigation';
-import NumberFormat from 'react-number-format';
 
 class Filter extends Component {
   constructor() {
