@@ -7,6 +7,8 @@ import Home from './src/screens/Home';
 import Wishlist from './src/screens/Wishlist';
 import Cart from './src/screens/Cart';
 import Profile from './src/screens/Profile';
+import Sort from './src/screens/Sort';
+import Filter from './src/screens/Filter';
 
 const AppNavigator = createStackNavigator(
   {
@@ -24,6 +26,12 @@ const AppNavigator = createStackNavigator(
     },
     Profile: {
       screen: Profile,
+    },
+    Sort: {
+      screen: Sort,
+    },
+    Filter: {
+      screen: Filter,
     },
   },
   {

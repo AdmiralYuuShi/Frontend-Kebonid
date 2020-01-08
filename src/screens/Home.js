@@ -1,12 +1,8 @@
-import React, {Component} from 'react';
-import {Text, View} from 'react-native';
+import React from 'react';
+import HomeProduk from '../components/Home';
 
-export default class Home extends Component {
-  render() {
-    return (
-      <View>
-        <Text> Home </Text>
-      </View>
-    );
-  }
-}
+const Home = () => {
+  return <HomeProduk />;
+};
+
+export default Home;
