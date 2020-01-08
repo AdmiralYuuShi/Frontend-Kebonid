@@ -111,14 +111,14 @@ class Home extends Component {
             onPress={() => this.props.navigation.navigate('Sort')}>
             <View style={styles.sort}>
               <Icon active name="sort" size={20} style={styles.iconsort} />
-              <Text>Sort</Text>
+              <Text style={styles.textFilter}>Sort</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => this.props.navigation.navigate('Filter')}>
             <View style={styles.filter}>
               <Icon active name="filter" size={20} style={styles.iconfilter} />
-              <Text>Filter</Text>
+              <Text style={styles.textFilter}>Filter</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -181,6 +181,9 @@ const styles = StyleSheet.create({
   },
   iconfilter: {
     marginRight: wp('3%'),
+  },
+  textFilter: {
+    fontSize: wp('3.5%'),
   },
 });
 
