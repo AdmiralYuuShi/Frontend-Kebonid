@@ -19,7 +19,7 @@ const AppNavigator = createStackNavigator(
       screen: Login,
     },
     Register: {
-      screen: Register
+      screen: Register,
     },
     BottomNavbar: {
       screen: BottomNavbar,
