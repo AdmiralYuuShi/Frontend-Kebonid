@@ -73,7 +73,7 @@ class Login extends Component {
                                         } style={{ backgroundColor: '#03AC0E', borderRadius: wp('3%'), marginTop: hp('3%') }}>
                                         <Text style={{ color: "#ffffff" }} >Sign In</Text>
                                     </Button>
-                                    <Button full title='Sign Up' onPress={() => this.props.navigation.navigate('Sign Up')
+                                    <Button full title='Sign Up' onPress={() => this.props.navigation.navigate('Register')
                                     } style={{ backgroundColor: '#ffffff', borderRadius: wp('3%'), borderWidth: wp('0.5%'), marginTop: hp('3%'), borderColor: "#03AC0E" }}>
                                         <Text style={{ color: "#03AC0E" }} >Sign Up</Text>
                                     </Button>
