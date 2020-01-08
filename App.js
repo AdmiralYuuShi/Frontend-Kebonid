@@ -11,11 +11,15 @@ import Sort from './src/screens/Sort';
 import Filter from './src/screens/Filter';
 import Product from './src/screens/Product';
 import Login from './src/screens/Login';
+import Register from './src/screens/SignUp';
 
 const AppNavigator = createStackNavigator(
   {
     Login: {
       screen: Login,
+    },
+    Register: {
+      screen: Register
     },
     BottomNavbar: {
       screen: BottomNavbar,

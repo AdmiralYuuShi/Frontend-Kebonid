@@ -71,7 +71,6 @@ class Login extends Component {
                   {touched.password && errors.password && (
                     <Text style={style.errpass}>{errors.password}</Text>
                   )}
-
                   {touched.role && errors.role && (
                     <Text style={style.errrole}>{errors.role}</Text>
                   )}
@@ -102,7 +101,7 @@ class Login extends Component {
         )}
       </Formik>
     );
-  }
+  }                                   
 }
 export default withNavigation(Login);
 
