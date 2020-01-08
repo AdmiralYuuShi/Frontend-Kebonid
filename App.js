@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { createAppContainer } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
+import React, {Component} from 'react';
+import {createAppContainer} from 'react-navigation';
+import {createStackNavigator} from 'react-navigation-stack';
 // screens
 import BottomNavbar from './src/screens/BottomNavbar';
 import Home from './src/screens/Home';
@@ -10,17 +10,16 @@ import Profile from './src/screens/Profile';
 import Sort from './src/screens/Sort';
 import Filter from './src/screens/Filter';
 import Product from './src/screens/Product';
-import Login from './src/screens/Login'
-import Register from './src/screens/SignUp'
-
+import Login from './src/screens/Login';
+import Register from './src/screens/SignUp';
 
 const AppNavigator = createStackNavigator(
   {
     Login: {
-      screen: Login
+      screen: Login,
     },
     Register: {
-      screen: Register
+      screen: Register,
     },
     BottomNavbar: {
       screen: BottomNavbar,
