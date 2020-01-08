@@ -11,11 +11,14 @@
   },
   "dependencies": {
     "@react-native-community/masked-view": "^0.1.5",
+    "formik": "^2.1.1",
     "native-base": "^2.13.8",
     "react": "16.9.0",
     "react-native": "0.61.5",
     "react-native-easy-grid": "^0.2.2",
+    "react-native-formik": "^1.7.7",
     "react-native-gesture-handler": "^1.5.3",
+    "react-native-hide-show-password-input": "^1.1.0",
     "react-native-material-bottom-navigation": "^1.0.5",
     "react-native-paper": "^3.4.0",
     "react-native-reanimated": "^1.4.0",
@@ -26,7 +29,8 @@
     "react-navigation": "^4.0.10",
     "react-navigation-material-bottom-tabs": "^2.1.5",
     "react-navigation-stack": "^2.0.11",
-    "react-number-format": "^4.3.1"
+    "react-number-format": "^4.3.1",
+    "yup": "^0.28.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.7",

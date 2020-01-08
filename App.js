@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {createAppContainer} from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
+import React, { Component } from 'react';
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 // screens
 import BottomNavbar from './src/screens/BottomNavbar';
 import Home from './src/screens/Home';
@@ -9,9 +9,13 @@ import Cart from './src/screens/Cart';
 import Profile from './src/screens/Profile';
 import Sort from './src/screens/Sort';
 import Filter from './src/screens/Filter';
+import Login from './src/screens/Login'
 
 const AppNavigator = createStackNavigator(
   {
+    Login: {
+      screen: Login
+    },
     BottomNavbar: {
       screen: BottomNavbar,
     },
@@ -33,6 +37,7 @@ const AppNavigator = createStackNavigator(
     Filter: {
       screen: Filter,
     },
+
   },
   {
     headerMode: 'none',
