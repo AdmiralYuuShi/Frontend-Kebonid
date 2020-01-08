@@ -9,7 +9,9 @@ import Cart from './src/screens/Cart';
 import Profile from './src/screens/Profile';
 import Sort from './src/screens/Sort';
 import Filter from './src/screens/Filter';
+import Product from './src/screens/Product';
 import Login from './src/screens/Login'
+
 
 const AppNavigator = createStackNavigator(
   {
@@ -37,7 +39,9 @@ const AppNavigator = createStackNavigator(
     Filter: {
       screen: Filter,
     },
-
+    Product: {
+      screen: Product,
+    },
   },
   {
     headerMode: 'none',

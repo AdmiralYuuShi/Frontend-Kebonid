@@ -183,8 +183,8 @@ const styles = StyleSheet.create({
     marginRight: wp('3%'),
   },
   textFilter: {
-    fontSize: wp('3,5%')
-  }
+    fontSize: wp('3.5%'),
+  },
 });
 
 export default withNavigation(Home);

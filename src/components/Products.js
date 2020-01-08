@@ -1,34 +1,42 @@
 import React from 'react';
-import {Text, StyleSheet, View, Image} from 'react-native';
+import {Text, StyleSheet, View, Image, TouchableOpacity} from 'react-native';
 import NumberFormat from 'react-number-format';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {withNavigation} from 'react-navigation';
 
 const Products = props => {
-  const {item} = props;
+  const {item, navigation} = props;
   return (
     <>
-      <View style={styles.view}>
-        <Image
-          style={styles.image}
-          source={{
-            uri:
-              'https://www.amwaytoday.co.id/kesehatan/info-produk/Bigger-is-Better.img.png/1567420073429.png',
-          }}
-        />
-        <Text style={styles.textname} numberOfLines={2} ellipsizeMode="tail">
-          {item.name}
-        </Text>
-        <NumberFormat
-          value={item.code}
-          displayType={'text'}
-          thousandSeparator={true}
-          prefix={'Rp. '}
-          renderText={value => <Text style={styles.textprice}>{value}</Text>}
-        />
-      </View>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('Product', {
+            product: item,
+          })
+        }>
+        <View style={styles.view}>
+          <Image
+            style={styles.image}
+            source={{
+              uri:
+                'https://www.amwaytoday.co.id/kesehatan/info-produk/Bigger-is-Better.img.png/1567420073429.png',
+            }}
+          />
+          <Text style={styles.textname} numberOfLines={2} ellipsizeMode="tail">
+            {item.name}
+          </Text>
+          <NumberFormat
+            value={item.code}
+            displayType={'text'}
+            thousandSeparator={true}
+            prefix={'Rp. '}
+            renderText={value => <Text style={styles.textprice}>{value}</Text>}
+          />
+        </View>
+      </TouchableOpacity>
     </>
   );
 };
@@ -63,4 +71,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Products;
+export default withNavigation(Products);
