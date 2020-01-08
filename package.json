@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@react-native-community/masked-view": "^0.1.5",
+    "@react-native-community/viewpager": "^3.3.0",
     "formik": "^2.1.1",
     "native-base": "^2.13.8",
     "react": "16.9.0",
@@ -27,6 +28,7 @@
     "react-native-safe-area-context": "^0.6.2",
     "react-native-screens": "^2.0.0-alpha.22",
     "react-native-search-bar": "^3.5.1",
+    "react-native-swiper": "^1.5.14",
     "react-navigation": "^4.0.10",
     "react-navigation-material-bottom-tabs": "^2.1.5",
     "react-navigation-stack": "^2.0.11",

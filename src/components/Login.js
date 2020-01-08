@@ -90,7 +90,7 @@ class Login extends Component {
                   <Button
                     full
                     title="Sign Up"
-                    onPress={() => this.props.navigation.navigate('Sign Up')}
+                    onPress={() => this.props.navigation.navigate('Register')}
                     style={style.signup}>
                     <Text style={style.signuptext}>Sign Up</Text>
                   </Button>
@@ -101,7 +101,7 @@ class Login extends Component {
         )}
       </Formik>
     );
-  }                                   
+  }
 }
 export default withNavigation(Login);
 
