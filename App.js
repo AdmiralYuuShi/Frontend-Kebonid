@@ -14,6 +14,7 @@ import Start from './src/screens/Start';
 import Login from './src/screens/Login';
 import Register from './src/screens/SignUp';
 import EditPhotoUser from './src/screens/EditPhotoUser';
+import EditUser from './src/screens/EditUser';
 
 const AppNavigator = createStackNavigator(
   {
@@ -25,6 +26,9 @@ const AppNavigator = createStackNavigator(
     },
     Register: {
       screen: Register,
+    },
+    EditUser: {
+      screen: EditUser,
     },
     EditPhotoUser: {
       screen: EditPhotoUser,
