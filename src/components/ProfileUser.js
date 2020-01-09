@@ -11,6 +11,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {Button} from 'react-native-paper';
+import {Rating} from 'react-native-elements';
 class ProfileUser extends Component {
   render() {
     return (
@@ -20,7 +21,7 @@ class ProfileUser extends Component {
             <View style={style.containerImage}>
               <TouchableOpacity
                 onPress={() => {
-                  this.props.navigation.push('EditFotoUser');
+                  this.props.navigation.push('EditPhotoUser');
                 }}>
                 <Avatar
                   size="xlarge"
@@ -65,6 +66,15 @@ class ProfileUser extends Component {
               <Text style={style.textStatus}>Kupon</Text>
               <Text style={style.textStatus2}>0</Text>
             </View>
+          </View>
+          <View style={style.ratingWrapper}>
+            <Text style={style.rating}>Berikan kami rating</Text>
+            <Rating
+              onFinishRating={this.ratingCompleted}
+              minValue={0}
+              startingValue={0}
+              style={{paddingVertical: 10}}
+            />
           </View>
           <View>
             <ListItem title="Pesan bantuan" bottomDivider chevron />
@@ -125,5 +135,14 @@ const style = StyleSheet.create({
     borderRadius: wp('3%'),
   },
   textStatus2: {color: 'green', marginTop: 4, fontSize: wp('5%')},
+  rating: {
+    fontSize: hp('3%'),
+    textAlign: 'center',
+    marginBottom: hp('2%'),
+  },
+  ratingWrapper: {
+    marginTop: hp('2%'),
+    marginBottom: hp('2%'),
+  },
 });
 export default withNavigation(ProfileUser);
