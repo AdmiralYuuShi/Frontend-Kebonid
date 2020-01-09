@@ -41,13 +41,14 @@ class ProfileUser extends Component {
               </Text>
             </View>
             <View>
-              <Button
-                style={style.button}
+              <TouchableOpacity
                 onPress={() => {
                   this.props.navigation.push('EditUser');
                 }}>
-                <Text style={style.textButton}>Edit</Text>
-              </Button>
+                <Button style={style.button}>
+                  <Text style={style.textButton}>Edit</Text>
+                </Button>
+              </TouchableOpacity>
             </View>
           </View>
           <View style={style.card}>
