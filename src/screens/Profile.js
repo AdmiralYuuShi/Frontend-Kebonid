@@ -9,8 +9,8 @@ import {
   Body,
   Title,
 } from 'native-base';
-import Tab1 from './ProfileUser';
-import Tab2 from './ProfileStore';
+import Tab1 from '../components/ProfileUser';
+import Tab2 from '../components/ProfileStore';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,

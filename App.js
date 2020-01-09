@@ -13,6 +13,7 @@ import Product from './src/screens/Product';
 import Start from './src/screens/Start';
 import Login from './src/screens/Login';
 import Register from './src/screens/SignUp';
+import EditPhotoUser from './src/screens/EditPhotoUser';
 
 const AppNavigator = createStackNavigator(
   {
@@ -24,6 +25,9 @@ const AppNavigator = createStackNavigator(
     },
     Register: {
       screen: Register,
+    },
+    EditPhotoUser: {
+      screen: EditPhotoUser,
     },
     BottomNavbar: {
       screen: BottomNavbar,
