@@ -45,21 +45,14 @@ class Login extends Component {
           <Fragment>
             <ScrollView>
               <Container style={style.Login}>
-                <View
-                  style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    marginTop: hp('-20%'),
-                  }}>
+                <View style={style.logo}>
                   <Image
-                    source={require('../assets/logo.png')}
-                    style={{resizeMode: 'stretch', width: wp('80%')}}
+                  source={require('../assets/logo.png')}
+                    style={style.image}
                   />
                 </View>
                 <View>
-                  <Label style={{fontSize: 30, textAlign: 'center'}}>
-                    Sign In
-                  </Label>
+                  <Label style={style.label}>Sign In</Label>
                   <TextInput
                     value={values.email}
                     onChangeText={handleChange('email')}
@@ -67,9 +60,7 @@ class Login extends Component {
                     onBlur={() => setFieldTouched('email')}
                   />
                   {touched.email && errors.email && (
-                    <Text style={{fontSize: 10, color: 'red'}}>
-                      {errors.email}
-                    </Text>
+                    <Text style={style.erremail}>{errors.email}</Text>
                   )}
                   <PasswordInputText
                     value={values.password}
@@ -78,20 +69,13 @@ class Login extends Component {
                     secureTextEntry={true}
                   />
                   {touched.password && errors.password && (
-                    <Text style={{fontSize: 10, color: 'red'}}>
-                      {errors.password}
-                    </Text>
+                    <Text style={style.errpass}>{errors.password}</Text>
                   )}
-
                   {touched.role && errors.role && (
-                    <Text style={{fontSize: 10, color: 'red'}}>
-                      {errors.role}
-                    </Text>
+                    <Text style={style.errrole}>{errors.role}</Text>
                   )}
                   <TouchableOpacity onPress={() => alert('makanya inget dong')}>
-                    <Text style={{textAlign: 'right', color: 'grey'}}>
-                      Forget password ?
-                    </Text>
+                    <Text style={style.forgot}>Forget password ?</Text>
                   </TouchableOpacity>
                   <Button
                     full
@@ -100,25 +84,15 @@ class Login extends Component {
                     onPress={() =>
                       this.props.navigation.navigate('BottomNavbar')
                     }
-                    style={{
-                      backgroundColor: '#03AC0E',
-                      borderRadius: wp('3%'),
-                      marginTop: hp('3%'),
-                    }}>
-                    <Text style={{color: '#ffffff'}}>Sign In</Text>
+                    style={style.signin}>
+                    <Text style={style.signintext}>Sign In</Text>
                   </Button>
                   <Button
                     full
                     title="Sign Up"
                     onPress={() => this.props.navigation.navigate('Register')}
-                    style={{
-                      backgroundColor: '#ffffff',
-                      borderRadius: wp('3%'),
-                      borderWidth: wp('0.5%'),
-                      marginTop: hp('3%'),
-                      borderColor: '#03AC0E',
-                    }}>
-                    <Text style={{color: '#03AC0E'}}>Sign Up</Text>
+                    style={style.signup}>
+                    <Text style={style.signuptext}>Sign Up</Text>
                   </Button>
                 </View>
               </Container>
@@ -141,4 +115,33 @@ const style = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
   },
+  logo: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: hp('-20%'),
+  },
+  signup: {
+    backgroundColor: '#ffffff',
+    borderRadius: wp('3%'),
+    borderWidth: wp('0.5%'),
+    marginTop: hp('3%'),
+    borderColor: '#03AC0E',
+  },
+  signuptext: {
+    color: '#03AC0E',
+  },
+  signintext: {
+    color: '#ffffff',
+  },
+  signin: {
+    backgroundColor: '#03AC0E',
+    borderRadius: wp('3%'),
+    marginTop: hp('3%'),
+  },
+  forgot: {textAlign: 'right', color: 'grey'},
+  image: {resizeMode: 'stretch', width: wp('80%')},
+  label: {fontSize: 30, textAlign: 'center'},
+  errpass: {fontSize: 10, color: 'red'},
+  erremail: {fontSize: 10, color: 'red'},
+  errrole: {fontSize: 10, color: 'red'},
 });
