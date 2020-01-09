@@ -15,6 +15,7 @@ import Login from './src/screens/Login';
 import Register from './src/screens/SignUp';
 import EditPhotoUser from './src/screens/EditPhotoUser';
 import EditUser from './src/screens/EditUser';
+import AddStoreAccount from './src/screens/AddStoreAccount';
 
 const AppNavigator = createStackNavigator(
   {
@@ -32,6 +33,9 @@ const AppNavigator = createStackNavigator(
     },
     EditPhotoUser: {
       screen: EditPhotoUser,
+    },
+    AddStoreAccount: {
+      screen: AddStoreAccount,
     },
     BottomNavbar: {
       screen: BottomNavbar,

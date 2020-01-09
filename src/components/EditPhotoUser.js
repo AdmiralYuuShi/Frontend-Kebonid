@@ -44,9 +44,9 @@ export default class EditPhotoUser extends Component {
     };
     ImagePicker.showImagePicker(options, response => {
       console.log('Response = ', response);
-      if (response.fileSize > 10485760) {
+      if (response.fileSize > 6291456) {
         this.setState({
-          photoErr: 'File too large max 2 MB',
+          photoErr: 'File too large max 6 MB',
         });
       }
       if (response.didCancel) {
@@ -126,7 +126,7 @@ const style = StyleSheet.create({
     marginRight: wp('3%'),
     marginTop: wp('3%'),
   },
-  image: {height: 200, width: 200, flex: 1},
+  image: {height: hp('34'), width: wp('61%'), flex: 1},
   button1: {
     backgroundColor: '#009e00',
     marginBottom: hp('2%'),
