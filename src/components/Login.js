@@ -45,6 +45,7 @@ class Login extends Component {
           <Fragment>
             <ScrollView>
               <Container style={style.Login}>
+              
                 <View style={style.logo}>
                   <Image
                     source={require('../assets/logo.png')}
@@ -101,7 +102,7 @@ class Login extends Component {
         )}
       </Formik>
     );
-  }
+  }                                  
 }
 export default withNavigation(Login);
 
