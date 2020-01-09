@@ -17,9 +17,14 @@ import Login from './src/screens/Login';
 import Register from './src/screens/SignUp';
 import EditPhotoUser from './src/screens/EditPhotoUser';
 import AddProduct from './src/screens/AddProduct';
-
+import EditUser from './src/screens/EditUser';
+import AddStoreAccount from './src/screens/AddStoreAccount';
+import Splash from './src/screens/Splash';
 const AppNavigator = createStackNavigator(
   {
+    Splash: {
+      screen: Splash,
+    },
     Start: {
       screen: Start,
     },
@@ -29,8 +34,14 @@ const AppNavigator = createStackNavigator(
     Register: {
       screen: Register,
     },
+    EditUser: {
+      screen: EditUser,
+    },
     EditPhotoUser: {
       screen: EditPhotoUser,
+    },
+    AddStoreAccount: {
+      screen: AddStoreAccount,
     },
     BottomNavbar: {
       screen: BottomNavbar,

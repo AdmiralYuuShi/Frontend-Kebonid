@@ -11,6 +11,7 @@ import {
 } from 'native-base';
 import Tab1 from '../components/ProfileUser';
 import Tab2 from '../components/ProfileStore';
+import Tab3 from '../components/AddStore';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -40,6 +41,14 @@ export default class Profile extends Component {
             tabStyle={style.bgWhite}
             activeTabStyle={style.bgWhite}>
             <Tab2 />
+          </Tab>
+          <Tab
+            heading="Coba"
+            textStyle={style.cBlack}
+            activeTextStyle={style.cGreen}
+            tabStyle={style.bgWhite}
+            activeTabStyle={style.bgWhite}>
+            <Tab3 />
           </Tab>
         </Tabs>
       </Container>
