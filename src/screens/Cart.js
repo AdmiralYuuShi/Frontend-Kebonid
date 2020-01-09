@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
-import {Text, View} from 'react-native';
+import CartList from '../components/Cart';
 
 export default class Cart extends Component {
   render() {
     return (
-      <View>
-        <Text> Cart </Text>
-      </View>
+      <>
+        <CartList />
+      </>
     );
   }
 }
