@@ -3,7 +3,7 @@ import {StyleSheet, ScrollView, Text, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/Fontisto';
-import {View} from 'native-base';
+import {View, Button as ButtonNB} from 'native-base';
 import {Avatar, ListItem} from 'react-native-elements';
 import {withNavigation} from 'react-navigation';
 import {
@@ -65,6 +65,22 @@ class ProfileUser extends Component {
               <Icon2 name="shopping-sale" size={30} color="green" />
               <Text style={style.textStatus}>Kupon</Text>
               <Text style={style.textStatus2}>0</Text>
+            </View>
+          </View>
+          <View style={style.ratingWrapper}>
+            <Text style={style.rating}>Produk</Text>
+            <ButtonNB
+              light
+              style={style.buttonadd}
+              onPress={() => this.props.navigation.navigate('AddProduct')}>
+              <Icon name="plus" size={18} color={'#B3B6B7'} />
+              <Text style={style.textadd}>Tambah Produk</Text>
+            </ButtonNB>
+            <View style={style.productWrapper}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate('ProductStore')}>
+                <ListItem title="Produk Anda" bottomDivider chevron />
+              </TouchableOpacity>
             </View>
           </View>
           <View style={style.ratingWrapper}>
@@ -145,5 +161,22 @@ const style = StyleSheet.create({
     marginBottom: hp('2%'),
   },
   ratings: {paddingVertical: 10},
+  buttonadd: {
+    borderWidth: wp('0.5%'),
+    borderColor: '#B3B6B7',
+    borderRadius: wp('2%'),
+    width: wp('90%'),
+    alignSelf: 'center',
+    height: hp('6.5%'),
+    justifyContent: 'center',
+  },
+  textadd: {
+    color: '#B3B6B7',
+    fontSize: wp('4.5%'),
+    marginLeft: wp('3%'),
+  },
+  productWrapper: {
+    marginTop: hp('1.5%'),
+  },
 });
 export default withNavigation(ProfileUser);
