@@ -28,6 +28,7 @@
     "react-native-safe-area-context": "^0.6.2",
     "react-native-screens": "^2.0.0-alpha.22",
     "react-native-search-bar": "^3.5.1",
+    "react-native-swiper": "^1.5.14",
     "react-native-tab-view": "^2.11.0",
     "react-native-swiper": "^1.5.14",
     "react-navigation": "^4.0.10",

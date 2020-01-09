@@ -48,6 +48,9 @@ class Login extends Component {
                 <View style={style.logo}>
                   <Image
                   source={require('../assets/logo.png')}
+                <View style={style.logo}>
+                  <Image
+                    source={require('../assets/logo.png')}
                     style={style.image}
                   />
                 </View>
@@ -101,7 +104,7 @@ class Login extends Component {
         )}
       </Formik>
     );
-  }
+  }                                  
 }
 export default withNavigation(Login);
 
