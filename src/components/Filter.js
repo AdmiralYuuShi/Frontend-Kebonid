@@ -60,11 +60,7 @@ class Filter extends Component {
                 style={styles.picker}
                 mode="dialog"
                 selectedValue={this.state.category}
-                onValueChange={value =>
-                  this.setState({
-                    category: value,
-                  })
-                }>
+                onValueChange={value => this.setState({category: value})}>
                 <Picker.Item label="Pilih Kategori" value="" />
                 <Picker.Item label="Sayur" value="sayur" />
                 <Picker.Item label="Buah-buahan" value="buah" />
@@ -102,8 +98,14 @@ const styles = StyleSheet.create({
   icon: {
     marginLeft: wp('2%'),
   },
-  form1: {position: 'absolute', left: wp('5%')},
-  form2: {position: 'absolute', right: wp('5%')},
+  form1: {
+    position: 'absolute',
+    left: wp('5%'),
+  },
+  form2: {
+    position: 'absolute',
+    right: wp('5%'),
+  },
   min: {
     width: wp('42%'),
   },

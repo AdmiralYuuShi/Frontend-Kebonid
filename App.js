@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
+import {Provider} from 'react-redux';
+import store from './src/public/redux/store';
 // screens
 import BottomNavbar from './src/screens/BottomNavbar';
 import Home from './src/screens/Home';
@@ -14,6 +16,7 @@ import Start from './src/screens/Start';
 import Login from './src/screens/Login';
 import Register from './src/screens/SignUp';
 import EditPhotoUser from './src/screens/EditPhotoUser';
+import AddProduct from './src/screens/AddProduct';
 
 const AppNavigator = createStackNavigator(
   {
@@ -53,6 +56,9 @@ const AppNavigator = createStackNavigator(
     Product: {
       screen: Product,
     },
+    AddProduct: {
+      screen: AddProduct,
+    },
   },
   {
     headerMode: 'none',
@@ -67,6 +73,10 @@ const AppContainer = createAppContainer(AppNavigator);
 // wrap all component with redux Provider and the store
 export default class App extends Component {
   render() {
-    return <AppContainer />;
+    return (
+      <Provider store={store}>
+        <AppContainer />
+      </Provider>
+    );
   }
 }

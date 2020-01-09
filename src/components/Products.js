@@ -20,16 +20,22 @@ const Products = props => {
         <View style={styles.view}>
           <Image
             style={styles.image}
-            source={{
-              uri:
-                'https://www.amwaytoday.co.id/kesehatan/info-produk/Bigger-is-Better.img.png/1567420073429.png',
-            }}
+            source={
+              !item.photo
+                ? {
+                    uri:
+                      'https://haes.ca/wp-content/plugins/everest-timeline/images/no-image-available.png',
+                  }
+                : {
+                    uri: `http://54.164.140.233:8080/product/${item.photo}`,
+                  }
+            }
           />
           <Text style={styles.textname} numberOfLines={2} ellipsizeMode="tail">
             {item.name}
           </Text>
           <NumberFormat
-            value={item.code}
+            value={item.price}
             displayType={'text'}
             thousandSeparator={true}
             prefix={'Rp. '}
