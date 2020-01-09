@@ -16,9 +16,12 @@ import Register from './src/screens/SignUp';
 import EditPhotoUser from './src/screens/EditPhotoUser';
 import EditUser from './src/screens/EditUser';
 import AddStoreAccount from './src/screens/AddStoreAccount';
-
+import Splash from './src/screens/Splash';
 const AppNavigator = createStackNavigator(
   {
+    Splash: {
+      screen: Splash,
+    },
     Start: {
       screen: Start,
     },
