@@ -1,23 +1,25 @@
 import React from 'react';
 import {Text, StyleSheet, View, Image, TouchableOpacity} from 'react-native';
+import {Button} from 'native-base';
 import NumberFormat from 'react-number-format';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {withNavigation} from 'react-navigation';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
-const Products = props => {
+const WishlistProduct = props => {
   const {item, navigation} = props;
   return (
     <>
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate('Product', {
-            product: item,
-          })
-        }>
-        <View style={styles.view}>
+      <View style={styles.view}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('Product', {
+              product: item,
+            })
+          }>
           <Image
             style={styles.image}
             source={{
@@ -25,7 +27,7 @@ const Products = props => {
                 'https://www.amwaytoday.co.id/kesehatan/info-produk/Bigger-is-Better.img.png/1567420073429.png',
             }}
           />
-          <Text style={styles.textname} numberOfLines={2} ellipsizeMode="tail">
+          <Text style={styles.textname} numberOfLines={1} ellipsizeMode="tail">
             {item.name}
           </Text>
           <NumberFormat
@@ -35,15 +37,23 @@ const Products = props => {
             prefix={'Rp. '}
             renderText={value => <Text style={styles.textprice}>{value}</Text>}
           />
+        </TouchableOpacity>
+        <View style={styles.button}>
+          <Button style={styles.btndelete}>
+            <Icon name="trash" size={20} color={'#979A9A'} />
+          </Button>
+          <Button style={styles.btnbeli}>
+            <Text style={styles.beli}>Beli</Text>
+          </Button>
         </View>
-      </TouchableOpacity>
+      </View>
     </>
   );
 };
 
 const styles = StyleSheet.create({
   view: {
-    borderRadius: wp('3%'),
+    borderRadius: wp('0%'),
     margin: wp('1%'),
     height: hp('38%'),
     borderColor: '#ddd',
@@ -53,8 +63,8 @@ const styles = StyleSheet.create({
     width: wp('46.5%'),
     height: hp('25%'),
     resizeMode: 'stretch',
-    borderTopLeftRadius: wp('3%'),
-    borderTopRightRadius: wp('3%'),
+    borderTopLeftRadius: wp('0%'),
+    borderTopRightRadius: wp('0%'),
   },
   textname: {
     width: wp('42%'),
@@ -64,12 +74,34 @@ const styles = StyleSheet.create({
     marginTop: hp('1%'),
   },
   textprice: {
-    fontSize: wp('4.5%'),
+    fontSize: wp('4%'),
     marginLeft: wp('2.5%'),
-    position: 'absolute',
-    bottom: hp('1%'),
     color: '#E5511B',
+  },
+  button: {
+    position: 'absolute',
+    width: wp('46.5%'),
+    height: hp('5.8%'),
+    backgroundColor: '#ECF0F1',
+    bottom: hp('0%'),
+    flexDirection: 'row',
+  },
+  btndelete: {
+    width: wp('13%'),
+    marginLeft: wp('1%'),
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+  },
+  btnbeli: {
+    width: wp('30.5%'),
+    marginLeft: wp('1%'),
+    justifyContent: 'center',
+    backgroundColor: '#E5511B',
+  },
+  beli: {
+    fontSize: wp('5%'),
+    color: '#fff',
   },
 });
 
-export default withNavigation(Products);
+export default withNavigation(WishlistProduct);
