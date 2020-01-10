@@ -15,7 +15,7 @@ const Products = props => {
       <TouchableOpacity
         onPress={() =>
           navigation.navigate('Product', {
-            product: item,
+            id_product: item.id,
           })
         }>
         <View style={styles.view}>
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   image: {
     width: wp('46.5%'),
     height: hp('25%'),
-    resizeMode: 'stretch',
+    resizeMode: 'cover',
     borderTopLeftRadius: wp('3%'),
     borderTopRightRadius: wp('3%'),
   },

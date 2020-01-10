@@ -68,13 +68,13 @@ const styles = StyleSheet.create({
   },
   textname: {
     width: wp('42%'),
-    fontSize: wp('5%'),
+    fontSize: hp('2.5%'),
     marginLeft: wp('2.5%'),
     marginRight: wp('1.5%'),
     marginTop: hp('1%'),
   },
   textprice: {
-    fontSize: wp('4%'),
+    fontSize: hp('2.2%'),
     marginLeft: wp('2.5%'),
     color: '#E5511B',
   },

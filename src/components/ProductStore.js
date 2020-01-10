@@ -5,6 +5,7 @@ import {
   View,
   SafeAreaView,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {Header, Body, Title, Right, Left} from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -15,6 +16,9 @@ import {
 import {Item, Input} from 'native-base';
 import ListProductStore from './ListProductStore';
 import {withNavigation} from 'react-navigation';
+import {connect} from 'react-redux';
+import {getProducts, deleteProduct} from '../public/redux/actions/products';
+import {API_KEY_URL} from 'react-native-dotenv';
 
 class ProductStore extends Component {
   constructor(props) {
@@ -24,12 +28,45 @@ class ProductStore extends Component {
     };
   }
 
+  componentDidMount = async () => {
+    let url = `${API_KEY_URL}/product?search=1&sortBy=date_updated`;
+    await this.props.get(url);
+  };
+
+  onDelete = async (item, index) => {
+    const items = [...this.props.products.products];
+    let url = `${API_KEY_URL}/product/${items[index].id}`;
+    await this.props
+      .delete(url)
+      .then(() => {
+        Alert.alert('Success!', 'Berhasil Hapus Produk', [
+          {
+            text: 'Ok',
+            style: 'cancel',
+          },
+        ]);
+        this.apiCall();
+      })
+      .catch(err => {
+        Alert.alert(err);
+      });
+  };
+
+  apiCall = async () => {
+    let url = `${API_KEY_URL}/product?search=1&sortBy=date_updated`;
+    await this.props.get(url);
+  };
+
+  onSearch = async searchKey => {
+    this.setState({search: searchKey});
+
+    try {
+      let url = `${API_KEY_URL}/product?search=${searchKey}`;
+      await this.props.get(url);
+    } catch (err) {}
+  };
+
   render() {
-    const items = [
-      {id: 'c1', name: 'TURQUOISE', code: '900000', stok: 2},
-      {id: 'c2', name: 'EMERALD ', code: '40000', stok: 99},
-      {id: 'c3', name: 'PETER RIVER', code: '100000', stok: 500},
-    ];
     return (
       <>
         <Header style={styles.header}>
@@ -56,8 +93,13 @@ class ProductStore extends Component {
         </View>
         <SafeAreaView style={styles.list}>
           <FlatList
-            data={items}
-            renderItem={({item}) => <ListProductStore item={item} />}
+            data={this.props.products.products}
+            renderItem={({item, index}) => (
+              <ListProductStore
+                item={item}
+                onDelete={() => this.onDelete(item, index)}
+              />
+            )}
             keyExtractor={item => item.id}
           />
         </SafeAreaView>
@@ -102,4 +144,16 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withNavigation(ProductStore);
+const mapStateToProps = state => {
+  return {
+    products: state.products,
+  };
+};
+const mapDispatchToProps = dispatch => ({
+  get: url => dispatch(getProducts(url)),
+  delete: url => dispatch(deleteProduct(url)),
+});
+
+export default withNavigation(
+  connect(mapStateToProps, mapDispatchToProps)(ProductStore),
+);
