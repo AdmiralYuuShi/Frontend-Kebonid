@@ -18,6 +18,7 @@ import {Item, Input} from 'native-base';
 import Products from './Products';
 import {withNavigation} from 'react-navigation';
 import {connect} from 'react-redux';
+import { AndroidBackHandler } from 'react-navigation-backhandler';
 import {getProducts} from '../public/redux/actions/products';
 import {API_KEY_URL} from 'react-native-dotenv';
 
@@ -40,6 +41,10 @@ class Home extends Component {
   };
 
   componentDidMount = async () => {
+    // BackHandler.addEventListener(
+    //   'hardwareBackPress',
+    //   this.handleBackButtonPressAndroid
+    // );
     const sortVal = this.props.navigation.getParam('sortValue', '');
     let url = '';
     !sortVal
@@ -49,10 +54,24 @@ class Home extends Component {
         }`);
 
     await this.props.get(url);
-    this.props.auth.token &&
-      BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+    
   };
 
+  onBackButtonPressAndroid = () => {
+    /*
+    *   Returning `true` from `onBackButtonPressAndroid` denotes that we have handled the event,
+    *   and react-navigation's lister will not get called, thus not popping the screen.
+    *
+    *   Returning `false` will cause the event to bubble up and react-navigation's listener will pop the screen.
+    * */
+ 
+    if (this.props.auth.token !== null) {
+        this.handleBackButton();
+      return true;
+    }
+    return false;
+  };
+  
   handleBackButton() {
     Alert.alert(
       'Exit App',
@@ -75,14 +94,11 @@ class Home extends Component {
     return true;
   }
 
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
-  }
-
   render() {
     const {isClick} = this.state;
     return (
       <>
+      <AndroidBackHandler onBackPress={this.onBackButtonPressAndroid}>
         <Header style={styles.header}>
           <Body>
             <Title style={styles.title}>Home</Title>
@@ -138,6 +154,7 @@ class Home extends Component {
             </View>
           </TouchableOpacity>
         </View>
+      </AndroidBackHandler>
       </>
     );
   }

@@ -16,7 +16,7 @@ const persistConfig = {
   // Whitelist (Save Specific Reducers)
   whitelist: ['auth'],
   // Blacklist (Don't Save Specific Reducers)
-  blacklist: ['product'],
+  blacklist: ['products'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
