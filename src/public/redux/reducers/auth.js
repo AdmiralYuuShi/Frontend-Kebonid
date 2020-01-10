@@ -33,7 +33,16 @@ const auth = (state = initialState, action) => {
         detail: action.payload.data.detail,
         token: action.payload.data.token,
       };
-
+    case 'LOGOUT':
+      return {
+        ...state,
+        isLoading: false,
+        isFulfilled: true,
+        isRejected: false,
+        message: null,
+        detail: null,
+        token: null,
+      };
     default:
       return state;
   }
