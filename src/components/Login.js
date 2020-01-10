@@ -47,7 +47,7 @@ class Login extends Component {
               <Container style={style.Login}>
                 <View style={style.logo}>
                   <Image
-                  source={require('../assets/logo.png')}
+                    source={require('../assets/logo.png')}
                     style={style.image}
                   />
                 </View>
