@@ -16,10 +16,16 @@ import PasswordInputText from 'react-native-hide-show-password-input';
 import {login} from '../public/redux/actions/auth';
 import {connect} from 'react-redux';
 import {API_KEY_URL} from 'react-native-dotenv';
+import AwesomeAlerts from 'react-native-awesome-alerts';
 
 class Login extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      showAlert: false,
+      color: '',
+      message: '',
+    };
   }
 
   getLogin = values => {
@@ -30,16 +36,30 @@ class Login extends Component {
     this.props
       .login(API_KEY_URL + '/auth/login', data)
       .then(result => {
-        alert(this.props.auth.message);
-        this.props.navigation.navigate('BottomNavbar');
+        this.setState({
+          showAlert: true,
+          color: '#42B549',
+          message: this.props.auth.message,
+        });
       })
       .catch(err => {
         console.log(err);
-        alert('Login Failed!');
+        this.setState({
+          showAlert: true,
+          color: '#E53935',
+          message: 'Login Failed',
+        });
       });
   };
 
+  hideAlert = () => {
+    this.setState({
+      showAlert: false,
+    });
+  };
+
   render() {
+    const {showAlert, color, message} = this.state;
     return (
       <Formik
         initialValues={{email: '', password: ''}}
@@ -117,6 +137,23 @@ class Login extends Component {
                 </View>
               </Container>
             </ScrollView>
+            <AwesomeAlerts
+              show={showAlert}
+              showProgress={false}
+              message={message}
+              closeOnTouchOutSide={true}
+              closeOnHardwareBackPress={false}
+              showCancelButton={false}
+              showConfirmButton={true}
+              confirmText="OK"
+              confirmButtonColor={color}
+              onConfirmPressed={() => {
+                this.hideAlert();
+                message === 'Success login'
+                  ? this.props.navigation.navigate('BottomNavbar')
+                  : this.forceUpdate();
+              }}
+            />
           </Fragment>
         )}
       </Formik>

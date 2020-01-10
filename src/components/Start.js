@@ -40,6 +40,7 @@ const Start = props => {
           <Image source={require('../assets/logo.png')} />
         </View>
       </SafeAreaView>
+      {/* )} */}
     </>
   );
 };
