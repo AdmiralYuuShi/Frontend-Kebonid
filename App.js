@@ -3,7 +3,8 @@ import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import {Provider} from 'react-redux';
 import {MenuProvider} from 'react-native-popup-menu';
-import store from './src/public/redux/store';
+import {store, persistor} from './src/public/redux/store';
+import {PersistGate} from 'redux-persist/integration/react';
 // screens
 import BottomNavbar from './src/screens/BottomNavbar';
 import Home from './src/screens/Home';
@@ -23,6 +24,10 @@ import ProductStore from './src/screens/ProductStore';
 import EditUser from './src/screens/EditUser';
 import AddStoreAccount from './src/screens/AddStoreAccount';
 import Splash from './src/screens/Splash';
+import RequestForgotPassword from './src/screens/RequestForgotPassword';
+import ResetPassword from './src/screens/ResetPassword';
+import Transaction from './src/screens/Transaction';
+import Invoice from './src/screens/Invoice';
 const AppNavigator = createStackNavigator(
   {
     Splash: {
@@ -36,6 +41,18 @@ const AppNavigator = createStackNavigator(
     },
     Register: {
       screen: Register,
+    },
+    RequestForgotPassword: {
+      screen: RequestForgotPassword,
+    },
+    ResetPassword: {
+      screen: ResetPassword,
+    },
+    Invoice: {
+      screen: Invoice,
+    },
+    Transaction: {
+      screen: Transaction,
     },
     EditUser: {
       screen: EditUser,
@@ -96,7 +113,9 @@ export default class App extends Component {
     return (
       <MenuProvider>
         <Provider store={store}>
-          <AppContainer />
+          <PersistGate loading={null} persistor={persistor}>
+            <AppContainer />
+          </PersistGate>
         </Provider>
       </MenuProvider>
     );

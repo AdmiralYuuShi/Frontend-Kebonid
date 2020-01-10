@@ -6,6 +6,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+
 const Splash = () => {
   const {navigate} = useNavigation();
   useEffect(() => {
@@ -28,6 +29,7 @@ const Splash = () => {
     </ImageBackground>
   );
 };
+
 export default Splash;
 
 const style = StyleSheet.create({
