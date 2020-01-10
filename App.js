@@ -23,6 +23,10 @@ import ProductStore from './src/screens/ProductStore';
 import EditUser from './src/screens/EditUser';
 import AddStoreAccount from './src/screens/AddStoreAccount';
 import Splash from './src/screens/Splash';
+import RequestForgotPassword from './src/screens/RequestForgotPassword';
+import ResetPassword from './src/screens/ResetPassword';
+import Transaction from './src/screens/Transaction';
+import Invoice from './src/screens/Invoice';
 const AppNavigator = createStackNavigator(
   {
     Splash: {
@@ -36,6 +40,18 @@ const AppNavigator = createStackNavigator(
     },
     Register: {
       screen: Register,
+    },
+    RequestForgotPassword: {
+      screen: RequestForgotPassword,
+    },
+    ResetPassword: {
+      screen: ResetPassword,
+    },
+    Invoice: {
+      screen: Invoice,
+    },
+    Transaction: {
+      screen: Transaction,
     },
     EditUser: {
       screen: EditUser,

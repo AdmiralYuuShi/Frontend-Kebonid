@@ -1,10 +1,7 @@
 import * as Yup from 'yup';
 import {Formik} from 'formik';
-// import RNSecureStorage, { ACCESSIBLE } from 'rn-secure-storage'
-// import { fetchLogin } from '../public/redux/actions/login'
-// import { connect } from 'react-redux'
 import {Button, Container, Label} from 'native-base';
-import {TouchableOpacity, ScrollView} from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -12,25 +9,21 @@ import {
 import {withNavigation} from 'react-navigation';
 import React, {Component, Fragment} from 'react';
 import {TextInput, Text, Image, StyleSheet, View} from 'react-native';
-import PasswordInputText from 'react-native-hide-show-password-input';
-class Login extends Component {
+
+class RequestForgotPassword extends Component {
   constructor(props) {
     super(props);
   }
   render() {
     return (
       <Formik
-        initialValues={{email: '', password: ''}}
-        onSubmit={values => this.getLogin(values)}
+        initialValues={{email: ''}}
+        onSubmit={values => this.sendEmail(values)}
         validationSchema={Yup.object().shape({
           email: Yup.string()
             .label('email')
             .email('Enter a valid email')
             .required('Please enter a registered email'),
-          password: Yup.string()
-            .label('password')
-            .required()
-            .min(3, 'Password must have more than 3 characters '),
         })}>
         {({
           values,
@@ -44,7 +37,7 @@ class Login extends Component {
         }) => (
           <Fragment>
             <ScrollView>
-              <Container style={style.Login}>
+              <Container style={style.container}>
                 <View style={style.logo}>
                   <Image
                     source={require('../assets/logo.png')}
@@ -52,7 +45,11 @@ class Login extends Component {
                   />
                 </View>
                 <View>
-                  <Label style={style.label}>Sign In</Label>
+                  <Label style={style.label}>Request Password Baru</Label>
+                  <Text style={style.textNew}>
+                    Kami akan mengirim kode OTP untuk mereset password anda
+                    melalu email yang teregistrasi
+                  </Text>
                   <TextInput
                     value={values.email}
                     onChangeText={handleChange('email')}
@@ -62,40 +59,22 @@ class Login extends Component {
                   {touched.email && errors.email && (
                     <Text style={style.erremail}>{errors.email}</Text>
                   )}
-                  <PasswordInputText
-                    value={values.password}
-                    onChangeText={handleChange('password')}
-                    onBlur={() => setFieldTouched('password')}
-                    secureTextEntry={true}
-                  />
-                  {touched.password && errors.password && (
-                    <Text style={style.errpass}>{errors.password}</Text>
-                  )}
-                  {touched.role && errors.role && (
-                    <Text style={style.errrole}>{errors.role}</Text>
-                  )}
-                  <TouchableOpacity
-                    onPress={() =>
-                      this.props.navigation.navigate('RequestForgotPassword')
-                    }>
-                    <Text style={style.forgot}>Forget password ?</Text>
-                  </TouchableOpacity>
                   <Button
                     full
-                    title="Sign In"
+                    title="Submit"
                     disabled={!isValid}
                     onPress={() =>
-                      this.props.navigation.navigate('BottomNavbar')
+                      this.props.navigation.navigate('ResetPassword')
                     }
-                    style={style.signin}>
-                    <Text style={style.signintext}>Sign In</Text>
+                    style={style.submit}>
+                    <Text style={style.submitText}>Submit</Text>
                   </Button>
                   <Button
                     full
-                    title="Sign Up"
-                    onPress={() => this.props.navigation.navigate('Register')}
-                    style={style.signup}>
-                    <Text style={style.signuptext}>Sign Up</Text>
+                    title="Sign In"
+                    onPress={() => this.props.navigation.navigate('Login')}
+                    style={style.signin}>
+                    <Text style={style.signintext}>Sign In</Text>
                   </Button>
                 </View>
               </Container>
@@ -106,10 +85,10 @@ class Login extends Component {
     );
   }
 }
-export default withNavigation(Login);
+export default withNavigation(RequestForgotPassword);
 
 const style = StyleSheet.create({
-  Login: {
+  container: {
     justifyContent: 'center',
     flexGrow: 1,
     padding: wp('5%'),
@@ -123,14 +102,14 @@ const style = StyleSheet.create({
     alignItems: 'center',
     marginTop: hp('-20%'),
   },
-  signup: {
+  submit: {
     backgroundColor: '#ffffff',
     borderRadius: wp('3%'),
     borderWidth: wp('0.5%'),
     marginTop: hp('3%'),
     borderColor: '#03AC0E',
   },
-  signuptext: {
+  submitText: {
     color: '#03AC0E',
   },
   signintext: {
@@ -143,8 +122,14 @@ const style = StyleSheet.create({
   },
   forgot: {textAlign: 'right', color: 'grey'},
   image: {resizeMode: 'stretch', width: wp('80%')},
-  label: {fontSize: 30, textAlign: 'center'},
-  errpass: {fontSize: 10, color: 'red'},
-  erremail: {fontSize: 10, color: 'red'},
-  errrole: {fontSize: 10, color: 'red'},
+  label: {fontSize: wp('5%'), textAlign: 'center'},
+  errpass: {fontSize: wp('3%'), color: 'red'},
+  erremail: {fontSize: wp('3%'), color: 'red'},
+  errrole: {fontSize: wp('3%'), color: 'red'},
+  textNew: {
+    fontSize: wp('3%'),
+    textAlign: 'center',
+    marginTop: hp('3%'),
+    color: 'rgba(0,0,0,0.6)',
+  },
 });
