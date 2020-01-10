@@ -6,6 +6,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {withNavigation} from 'react-navigation';
+import {API_KEY_PHOTO} from 'react-native-dotenv';
 
 const Products = props => {
   const {item, navigation} = props;
@@ -27,7 +28,7 @@ const Products = props => {
                       'https://haes.ca/wp-content/plugins/everest-timeline/images/no-image-available.png',
                   }
                 : {
-                    uri: `http://54.164.140.233:8080/product/${item.photo}`,
+                    uri: `${API_KEY_PHOTO}/product/${item.photo}`,
                   }
             }
           />

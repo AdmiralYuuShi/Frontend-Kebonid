@@ -17,6 +17,7 @@ import Products from './Products';
 import {withNavigation} from 'react-navigation';
 import {connect} from 'react-redux';
 import {getProducts} from '../public/redux/actions/products';
+import {API_KEY_URL} from 'react-native-dotenv';
 
 class Home extends Component {
   constructor(props) {
@@ -31,7 +32,7 @@ class Home extends Component {
     this.setState({search: searchKey});
 
     try {
-      let url = `http://54.164.140.233:8080/api/v1/product?search=${searchKey}`;
+      let url = `${API_KEY_URL}/api/v1/product?search=${searchKey}`;
       await this.props.get(url);
     } catch (err) {}
   };
@@ -40,10 +41,10 @@ class Home extends Component {
     const sortVal = this.props.navigation.getParam('sortValue', '');
     let url = '';
     !sortVal
-      ? (url = 'http://54.164.140.233:8080/api/v1/product?sortBy=name&sort=asc')
-      : (url = `http://54.164.140.233:8080/api/v1/product?sortBy=${
-          sortVal.split('/')[0]
-        }&sort=${sortVal.split('/')[1]}`);
+      ? (url = `${API_KEY_URL}/product?sortBy=name&sort=asc`)
+      : (url = `${API_KEY_URL}/product?sortBy=${sortVal.split('/')[0]}&sort=${
+          sortVal.split('/')[1]
+        }`);
 
     await this.props.get(url);
   };
