@@ -3,7 +3,8 @@ import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import {Provider} from 'react-redux';
 import {MenuProvider} from 'react-native-popup-menu';
-import store from './src/public/redux/store';
+import {store, persistor} from './src/public/redux/store';
+import {PersistGate} from 'redux-persist/integration/react';
 // screens
 import BottomNavbar from './src/screens/BottomNavbar';
 import Home from './src/screens/Home';
@@ -96,7 +97,9 @@ export default class App extends Component {
     return (
       <MenuProvider>
         <Provider store={store}>
-          <AppContainer />
+          <PersistGate loading={null} persistor={persistor}>
+            <AppContainer />
+          </PersistGate>
         </Provider>
       </MenuProvider>
     );
