@@ -13,10 +13,32 @@ import {withNavigation} from 'react-navigation';
 import React, {Component, Fragment} from 'react';
 import {TextInput, Text, Image, StyleSheet, View} from 'react-native';
 import PasswordInputText from 'react-native-hide-show-password-input';
+import {login} from '../public/redux/actions/auth';
+import {connect} from 'react-redux';
+import {API_KEY_URL} from 'react-native-dotenv';
+
 class Login extends Component {
   constructor(props) {
     super(props);
   }
+
+  getLogin = values => {
+    let data = {
+      email: values.email,
+      password: values.password,
+    };
+    this.props
+      .login(API_KEY_URL + '/auth/login', data)
+      .then(result => {
+        alert(this.props.auth.message);
+        this.props.navigation.navigate('BottomNavbar');
+      })
+      .catch(err => {
+        console.log(err);
+        alert('Login Failed!');
+      });
+  };
+
   render() {
     return (
       <Formik
@@ -81,9 +103,7 @@ class Login extends Component {
                     full
                     title="Sign In"
                     disabled={!isValid}
-                    onPress={() =>
-                      this.props.navigation.navigate('BottomNavbar')
-                    }
+                    onPress={handleSubmit}
                     style={style.signin}>
                     <Text style={style.signintext}>Sign In</Text>
                   </Button>
@@ -103,7 +123,18 @@ class Login extends Component {
     );
   }
 }
-export default withNavigation(Login);
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+});
+
+const mapDispatchToProps = dispatch => ({
+  login: (url, data) => dispatch(login(url, data)),
+});
+
+export default withNavigation(
+  connect(mapStateToProps, mapDispatchToProps)(Login),
+);
 
 const style = StyleSheet.create({
   Login: {
