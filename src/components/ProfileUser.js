@@ -12,7 +12,16 @@ import {
 } from 'react-native-responsive-screen';
 import {Button} from 'react-native-paper';
 import {Rating} from 'react-native-elements';
+import {logout} from '../public/redux/actions/auth';
+import {connect} from 'react-redux';
+
 class ProfileUser extends Component {
+  
+  handleLogout = _ => {
+    this.props.logoutUser();
+    this.props.navigation.push('Start');
+  }
+  
   render() {
     return (
       <>
@@ -82,7 +91,7 @@ class ProfileUser extends Component {
             <ListItem title="Komplain pesanan" bottomDivider chevron />
             <ListItem title="FAQ" bottomDivider chevron />
             <ListItem title="Tentang aplikasi" bottomDivider chevron />
-            <TouchableOpacity>
+            <TouchableOpacity onPress={this.handleLogout}>
               <ListItem title="Keluar" bottomDivider chevron />
             </TouchableOpacity>
           </View>
@@ -146,4 +155,12 @@ const style = StyleSheet.create({
     marginBottom: hp('2%'),
   },
 });
-export default withNavigation(ProfileUser);
+
+const mapDispatchToProps = dispatch => ({
+  logoutUser: _ => dispatch(logout()),
+});
+
+export default connect(
+  null,
+  mapDispatchToProps,
+)(withNavigation(ProfileUser));
