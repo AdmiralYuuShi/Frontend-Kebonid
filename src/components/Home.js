@@ -5,6 +5,8 @@ import {
   FlatList,
   View,
   SafeAreaView,
+  BackHandler,
+  Alert,
 } from 'react-native';
 import {Header, Body, Title, Right, Text} from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -47,7 +49,35 @@ class Home extends Component {
         }`);
 
     await this.props.get(url);
+    this.props.auth.token &&
+      BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
   };
+
+  handleBackButton() {
+    Alert.alert(
+      'Exit App',
+      'Exiting the application?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => BackHandler.exitApp(),
+        },
+      ],
+      {
+        cancelable: false,
+      },
+    );
+    return true;
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
 
   render() {
     const {isClick} = this.state;
@@ -176,6 +206,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     products: state.products,
+    auth: state.auth,
   };
 };
 const mapDispatchToProps = dispatch => ({
