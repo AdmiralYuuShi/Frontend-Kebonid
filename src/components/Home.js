@@ -35,7 +35,7 @@ class Home extends Component {
     this.setState({search: searchKey});
 
     try {
-      let url = `${API_KEY_URL}/api/v1/product?search=${searchKey}`;
+      let url = `${API_KEY_URL}/product?search=${searchKey}`;
       await this.props.get(url);
     } catch (err) {}
   };

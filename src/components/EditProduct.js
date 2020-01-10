@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react';
+import React, {Component} from 'react';
 import {
   TouchableOpacity,
   StyleSheet,
@@ -6,6 +6,8 @@ import {
   View,
   ScrollView,
   Image,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import {
   Header,
@@ -26,12 +28,23 @@ import {
 } from 'react-native-responsive-screen';
 import ImagePicker from 'react-native-image-picker';
 import {TextInputMask} from 'react-native-masked-text';
+import {connect} from 'react-redux';
+import {updateProduct} from '../public/redux/actions/products';
+import {getProduct} from '../public/redux/actions/product';
+import {API_KEY_PHOTO, API_KEY_URL} from 'react-native-dotenv';
 
-class EditProduct extends PureComponent {
+class EditProduct extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      image: null,
+      id: '',
+      photo: null,
+      name: '',
+      description: '',
+      price: '',
+      stock: '',
+      uri: '',
+      filename: '',
     };
   }
 
@@ -47,15 +60,78 @@ class EditProduct extends PureComponent {
       } else {
         const source = {uri: response.uri, isStatic: true};
         this.setState({
-          image: source,
-          price: '',
+          photo: source,
+          uri: response.uri,
+          filename: response.fileName,
         });
       }
     });
   };
 
-  render() {
+  componentDidMount = async () => {
     const item = this.props.navigation.getParam('item', {});
+    let url = `${API_KEY_URL}/product/${item.id}`;
+    this.props.get(url).then(() => {
+      this.props.product.product.map(p => {
+        return this.setState({
+          id: p.id,
+          name: p.product_name,
+          photo: p.product_photo,
+          description: p.description,
+          stock: p.stock,
+          price: p.price,
+        });
+      });
+    });
+  };
+
+  onUpdate = async () => {
+    const {
+      name,
+      description,
+      stock,
+      price,
+      id,
+      photo,
+      uri,
+      filename,
+    } = this.state;
+    let url = `${API_KEY_URL}/product/${id}`;
+    let data = new FormData();
+    data.append('sellerId', '1');
+    data.append('name', name);
+    data.append('description', description);
+    data.append('stock', stock);
+    data.append('price', price);
+    data.append(
+      'photo',
+      !uri
+        ? photo
+        : {
+            uri,
+            type: 'image/jpeg',
+            name: filename,
+          },
+    );
+
+    await this.props
+      .update(url, data)
+      .then(() => {
+        Alert.alert('Success!', 'Berhasil Ubah Produk', [
+          {
+            text: 'OK',
+            style: 'cancel',
+          },
+        ]);
+        this.props.navigation.push('ProductStore');
+      })
+      .catch(err => {
+        Alert.alert(err);
+      });
+  };
+
+  render() {
+    const {photo, name, description, price, stock, uri} = this.state;
     return (
       <>
         <Header style={styles.header}>
@@ -68,9 +144,17 @@ class EditProduct extends PureComponent {
             <Title style={styles.title}>Edit Produk</Title>
           </Body>
           <Right>
-            <Button success small style={styles.save}>
-              <Text style={styles.addtext}>Save</Text>
-            </Button>
+            {this.props.products.isLoading ? (
+              <ActivityIndicator />
+            ) : (
+              <Button
+                success
+                small
+                style={styles.save}
+                onPress={this.onUpdate.bind(this)}>
+                <Text style={styles.addtext}>Save</Text>
+              </Button>
+            )}
           </Right>
         </Header>
         <View style={styles.viewimage}>
@@ -83,14 +167,7 @@ class EditProduct extends PureComponent {
           />
           <Image
             style={styles.image}
-            source={
-              !this.state.image
-                ? {
-                    uri:
-                      'https://developer.apple.com/library/archive/referencelibrary/GettingStarted/DevelopiOSAppsSwift/Art/defaultphoto_2x.png',
-                  }
-                : this.state.image
-            }
+            source={uri ? photo : {uri: `${API_KEY_PHOTO}/product/${photo}`}}
           />
         </View>
         <TouchableOpacity
@@ -110,11 +187,20 @@ class EditProduct extends PureComponent {
           <View>
             <Item stackedLabel style={styles.item}>
               <Label>Nama Produk</Label>
-              <Input value={item.name} />
+              <Input
+                value={name}
+                onChangeText={value => this.setState({name: value})}
+              />
             </Item>
             <Item stackedLabel style={styles.item}>
               <Label>Deskripsi Produk</Label>
-              <Input multiline={true} numberOfLines={4} style={styles.desc} />
+              <Input
+                multiline={true}
+                numberOfLines={4}
+                style={styles.desc}
+                value={description}
+                onChangeText={value => this.setState({description: value})}
+              />
             </Item>
             <Item stackedLabel style={styles.item}>
               <Label>Harga</Label>
@@ -128,17 +214,24 @@ class EditProduct extends PureComponent {
                   unit: 'Rp. ',
                   suffixUnit: '',
                 }}
-                value={item.code}
-                onChangeText={text => {
+                value={price}
+                onChangeText={value => {
                   this.setState({
-                    advanced: text,
+                    price: value
+                      .replace('Rp. ', '')
+                      .split('.')
+                      .join(''),
                   });
                 }}
               />
             </Item>
             <Item stackedLabel last style={styles.item}>
               <Label>Stok</Label>
-              <Input keyboardType="numeric" value={item.stok.toString()} />
+              <Input
+                keyboardType="numeric"
+                value={stock.toString()}
+                onChangeText={value => this.setState({stock: value})}
+              />
             </Item>
           </View>
         </ScrollView>
@@ -230,4 +323,18 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withNavigation(EditProduct);
+const mapStateToProps = state => {
+  return {
+    products: state.products,
+    product: state.product,
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  update: (url, data) => dispatch(updateProduct(url, data)),
+  get: url => dispatch(getProduct(url)),
+});
+
+export default withNavigation(
+  connect(mapStateToProps, mapDispatchToProps)(EditProduct),
+);

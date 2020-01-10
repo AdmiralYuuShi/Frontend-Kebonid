@@ -17,14 +17,52 @@ import {
 } from 'react-native-responsive-screen';
 import {ScrollView} from 'react-native-gesture-handler';
 import NumberFormat from 'react-number-format';
+import {connect} from 'react-redux';
+import {getProduct} from '../public/redux/actions/product';
+import {API_KEY_URL, API_KEY_PHOTO} from 'react-native-dotenv';
 
 class Product extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      product_name: '',
+      product_photo: null,
+      price: 0,
+      stock: 0,
+      description: '',
+      sellers_name: '',
+      sellers_photo: null,
+    };
+  }
+
+  componentDidMount() {
+    const id_product = this.props.navigation.getParam('id_product', '');
+    let url = `${API_KEY_URL}/product/${id_product}`;
+    this.props.get(url).then(() => {
+      this.props.product.product.map(p => {
+        return this.setState({
+          product_name: p.product_name,
+          product_photo: p.product_photo,
+          price: p.price,
+          stock: p.stock,
+          description: p.description,
+          sellers_name: p.sellers_name,
+          sellers_photo: p.sellers_photo,
+        });
+      });
+    });
   }
 
   render() {
-    const product = this.props.navigation.getParam('product', {});
+    const {
+      product_name,
+      product_photo,
+      price,
+      stock,
+      description,
+      sellers_name,
+      sellers_photo,
+    } = this.state;
     return (
       <>
         <Header style={styles.header}>
@@ -41,21 +79,27 @@ class Product extends Component {
           <ScrollView style={{marginBottom: hp('8%')}}>
             <Image
               style={styles.image}
-              source={{
-                uri:
-                  'https://www.amwaytoday.co.id/kesehatan/info-produk/Bigger-is-Better.img.png/1567420073429.png',
-              }}
+              source={
+                !product_photo
+                  ? {
+                      uri:
+                        'https://haes.ca/wp-content/plugins/everest-timeline/images/no-image-available.png',
+                    }
+                  : {
+                      uri: `${API_KEY_PHOTO}/product/${product_photo}`,
+                    }
+              }
             />
             <View style={styles.floating}>
               <Icon name="heart" size={wp('10%')} color={'#979A9A'} />
             </View>
 
             <Text style={styles.textname} numberOfLines={2}>
-              {product.name}
+              {product_name}
             </Text>
             <View style={styles.viewstok}>
               <NumberFormat
-                value={product.code}
+                value={price}
                 displayType={'text'}
                 thousandSeparator={true}
                 prefix={'Rp. '}
@@ -63,16 +107,12 @@ class Product extends Component {
                   <Text style={styles.textprice}>{value}</Text>
                 )}
               />
-              <Text style={styles.stok}>Stok: 500</Text>
+              <Text style={styles.stok}>Stok: {stock}</Text>
             </View>
             <View style={styles.saparator} />
             <View>
               <Text style={styles.desc}>Deskripsi Produk</Text>
-              <Text style={styles.desctext}>
-                Jaket X Multifungsi terbuat dari bahan taslan yang tahan air dan
-                tidak mudah ditembus angin. Cocok bagi Anda yang banyak
-                beraktivitas di luar ruangan atau pengendara motor.
-              </Text>
+              <Text style={styles.desctext}>{description}</Text>
             </View>
             <View style={styles.saparator} />
             <View>
@@ -81,14 +121,20 @@ class Product extends Component {
                 <Left>
                   <Thumbnail
                     square
-                    source={{
-                      uri:
-                        'https://cf.shopee.co.id/file/691ed29004335e7ab3cf81ebda2497e2_tn',
-                    }}
+                    source={
+                      !sellers_photo
+                        ? {
+                            uri:
+                              'https://haes.ca/wp-content/plugins/everest-timeline/images/no-image-available.png',
+                          }
+                        : {
+                            uri: `${API_KEY_PHOTO}/customers/${sellers_photo}`,
+                          }
+                    }
                   />
                 </Left>
                 <Body>
-                  <Text style={styles.sellertext}>RajaCell</Text>
+                  <Text style={styles.sellertext}>{sellers_name}</Text>
                 </Body>
               </ListItem>
             </View>
@@ -247,4 +293,16 @@ const styles = StyleSheet.create({
   viewstok: {flexDirection: 'row', flex: 1},
 });
 
-export default withNavigation(Product);
+const mapStateToProps = state => {
+  return {
+    product: state.product,
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  get: url => dispatch(getProduct(url)),
+});
+
+export default withNavigation(
+  connect(mapStateToProps, mapDispatchToProps)(Product),
+);
