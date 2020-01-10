@@ -116,7 +116,10 @@ class Login extends Component {
                   {touched.role && errors.role && (
                     <Text style={style.errrole}>{errors.role}</Text>
                   )}
-                  <TouchableOpacity onPress={() => alert('makanya inget dong')}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.props.navigation.navigate('RequestForgotPassword')
+                    }>
                     <Text style={style.forgot}>Forget password ?</Text>
                   </TouchableOpacity>
                   <Button
