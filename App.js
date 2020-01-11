@@ -28,6 +28,7 @@ import RequestForgotPassword from './src/screens/RequestForgotPassword';
 import ResetPassword from './src/screens/ResetPassword';
 import Transaction from './src/screens/Transaction';
 import Invoice from './src/screens/Invoice';
+import GoToLogin from './src/screens/GoToLogin';
 const AppNavigator = createStackNavigator(
   {
     Splash: {
@@ -95,6 +96,9 @@ const AppNavigator = createStackNavigator(
     },
     ProductStore: {
       screen: ProductStore,
+    },
+    GoToLogin: {
+      screen: GoToLogin,
     },
   },
   {

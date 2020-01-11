@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {Image, StyleSheet, TouchableOpacity, View, Alert} from 'react-native';
 import {
   Container,
   Header,
@@ -13,27 +13,79 @@ import {
 } from 'native-base';
 import {Button} from 'react-native-elements';
 import ImagePicker from 'react-native-image-picker';
+import {withNavigation} from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-export default class EditPhotoUser extends Component {
+import {Bubbles} from 'react-native-loader';
+import {fetchUpdatePhotoUsers} from '../public/redux/actions/users';
+import {connect} from 'react-redux';
+import {API_KEY_PHOTO} from 'react-native-dotenv';
+class EditPhotoUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      type: '',
-      data: null,
       id: '',
       isLoading: false,
       isSelectedPhoto: 0,
       uri: '',
       fileName: '',
       photoErr: '',
-      Photo: '',
+      photo: '',
     };
+    this.editPhoto = this.editPhoto.bind(this);
+    this.backTo = this.backTo.bind(this);
   }
+  componentDidMount() {
+    console.log(this.props.auth.user.id);
+    const id = this.props.auth.user.id;
+    const photo = this.props.photo;
+    this.setState({
+      photo: photo,
+      id: id,
+    });
+  }
+  backTo() {
+    this.props.navigation.push('BottomNavbar');
+  }
+  editPhoto() {
+    const photo = {
+      uri: this.state.uri,
+      type: 'image/jpeg',
+      name: this.state.fileName,
+    };
+    console.log(photo);
 
+    const formData = new FormData();
+    formData.append('id', this.state.id);
+    formData.append('file', photo);
+    const config = {
+      headers: {
+        'content-type': 'multipart/form-data' + formData,
+      },
+    };
+    this.props.fetchUpdate(this.state.id, formData, config);
+    Alert.alert(
+      'Kamu yakin?',
+      'Avatar kamu akan di rubah',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () => {
+            this.backTo();
+          },
+        },
+      ],
+      {cancelable: false},
+    );
+  }
   UploadPhoto = () => {
     const options = {
       title: 'Select Avatar',
@@ -57,18 +109,22 @@ export default class EditPhotoUser extends Component {
         const source = {uri: response.uri};
 
         this.setState({
-          Photo: source,
+          photo: source,
           isSelectedPhoto: 1,
           uri: response.uri,
           fileName: response.fileName,
-          type: response.type,
-          data: response.data,
         });
       }
     });
   };
   render() {
     const {isLoading, photoErr, fileName} = this.state;
+    setTimeout(
+      function() {
+        this.setState({isLoading: true});
+      }.bind(this),
+      2000,
+    );
     return (
       <>
         <Header style={style.header}>
@@ -81,44 +137,76 @@ export default class EditPhotoUser extends Component {
             <Title style={style.title}>Edit Foto</Title>
           </Body>
         </Header>
-        <Container>
-          <Content>
-            <Card style={style.cardWrapper}>
-              <CardItem>
-                <Body style={style.imageBody}>
-                  <Image
-                    source={require('../assets/LogoDummy.png')}
-                    style={style.image}
-                  />
-                </Body>
-              </CardItem>
-              <CardItem>
-                <Text style={style.textRequirement}>
-                  Besar file: maksimum 10.000.000 bytes (10 Megabytes) Ekstensi
-                  file yang diperbolehkan: .JPG .JPEG .PNG
-                </Text>
-              </CardItem>
-              <CardItem>
-                <Text>{fileName}</Text>
-                <Text style={style.textErr}>{photoErr}</Text>
-              </CardItem>
-              <CardItem style={style.cardButton}>
-                <Body style={style.buttonWrapper}>
-                  <Button
-                    buttonStyle={style.button}
-                    onPress={this.UploadPhoto}
-                    title="PILIH FOTO"
-                  />
-                  <Button buttonStyle={style.button1} title="SIMPAN" />
-                </Body>
-              </CardItem>
-            </Card>
-          </Content>
-        </Container>
+        {!isLoading ? (
+          <View style={style.loader}>
+            <Bubbles size={10} style={style.loading} color="green" />
+          </View>
+        ) : (
+          <Container>
+            <Content>
+              <Card style={style.cardWrapper}>
+                <CardItem>
+                  <Body style={style.imageBody}>
+                    <Image
+                      source={
+                        this.state.isSelectedPhoto
+                          ? this.state.photo
+                          : this.state.photo === ''
+                          ? {
+                              uri:
+                                'https://http://raivens.com/wp-content/uploads/2016/08/Dummy-image.jpg',
+                            }
+                          : {uri: this.state.photo}
+                      }
+                      style={style.image}
+                    />
+                  </Body>
+                </CardItem>
+                <CardItem>
+                  <Text style={style.textRequirement}>
+                    Besar file: maksimum 10.000.000 bytes (10 Megabytes)
+                    Ekstensi file yang diperbolehkan: .JPG .JPEG .PNG
+                  </Text>
+                </CardItem>
+                <CardItem>
+                  <Text>{fileName}</Text>
+                  <Text style={style.textErr}>{photoErr}</Text>
+                </CardItem>
+                <CardItem style={style.cardButton}>
+                  <Body style={style.buttonWrapper}>
+                    <Button
+                      buttonStyle={style.button}
+                      onPress={this.UploadPhoto}
+                      title="PILIH FOTO"
+                    />
+                    <Button
+                      buttonStyle={style.button1}
+                      title="SIMPAN"
+                      onPress={this.editPhoto}
+                    />
+                  </Body>
+                </CardItem>
+              </Card>
+            </Content>
+          </Container>
+        )}
       </>
     );
   }
 }
+const mapStateToProps = state => ({
+  users: state.users,
+  auth: state.auth,
+});
+
+const mapDispatchToProps = dispatch => ({
+  fetchUpdate: (id, data, config) =>
+    dispatch(fetchUpdatePhotoUsers(id, data, config)),
+});
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(withNavigation(EditPhotoUser));
 const style = StyleSheet.create({
   cardWrapper: {
     flex: 0,
@@ -172,4 +260,10 @@ const style = StyleSheet.create({
     marginTop: 15,
     alignItems: 'center',
   },
+  loader: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: hp('30%'),
+  },
+  loading: {marginTop: hp('50%')},
 });
