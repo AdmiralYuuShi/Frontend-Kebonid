@@ -15,17 +15,38 @@ import {
 } from 'react-native-responsive-screen';
 import {withNavigation} from 'react-navigation';
 import React, {Component, Fragment} from 'react';
+import {connect} from 'react-redux';
 import {StyleSheet, View, Text, ActivityIndicator} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Divider, Image} from 'react-native-elements';
+import {payment} from '../public/redux/actions/payment';
+
 class Transaction extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selected: undefined,
       selectedBank: undefined,
+      total: 10000,
+      orderId: "qwerty333",
+      email: "mymaial@mail.com",
+      firstName: "Jimy",
+      lastName: "UwU",
+      itemDetails: [{
+        "id": "iniid999",
+        "price": 2000,
+        "quantity": 3,
+        "name": "Kopi"
+     },
+     {
+        "id": "iniid333",
+        "price": 4000,
+        "quantity": 1,
+        "name": "Susu"
+     }]
     };
   }
+
   onValueChange(value) {
     this.setState({
       selected: value,
@@ -35,6 +56,35 @@ class Transaction extends Component {
     this.setState({
       selectedBank: value,
     });
+  }
+
+  handlePayNow = _ => {
+
+    const data = {
+      payment_type: "gopay",
+      transaction_details: {
+          gross_amount: this.state.total,
+          order_id: this.state.orderId
+      },
+      gopay: {
+        enable_callback: true,
+        callback_url: "someapps://callback"
+      },
+        customer_details: {
+            email: this.state.email,
+            first_name: this.state.firstName,
+            last_name: this.state.lastName
+        },
+        item_details: this.state.itemDetails
+    }
+    const url = 'https://api.sandbox.midtrans.com/v2/charge'
+    this.props.payment(url, data)
+    this.props.navigation.navigate('Invoice', {
+      data: {
+        courier: this.state.selected,
+        bank: this.state.selectedBank,
+      },
+    })
   }
   render() {
     return (
@@ -151,14 +201,7 @@ class Transaction extends Component {
             <Button
               full
               title="Bayar Sekarang"
-              onPress={() =>
-                this.props.navigation.navigate('Invoice', {
-                  data: {
-                    courier: this.state.selected,
-                    bank: this.state.selectedBank,
-                  },
-                })
-              }
+              onPress={this.handlePayNow}
               style={style.button}>
               <Text style={style.buttontext}>Bayar Sekarang</Text>
             </Button>
@@ -168,7 +211,14 @@ class Transaction extends Component {
     );
   }
 }
-export default withNavigation(Transaction);
+
+const mapDispatchToProps = dispatch => ({
+  payment: (url, data) => dispatch(payment(url, data)),
+});
+
+export default withNavigation(
+  connect(null, mapDispatchToProps)(Transaction),
+);
 
 const style = StyleSheet.create({
   container: {
