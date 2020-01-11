@@ -6,6 +6,8 @@ import {
   View,
   ScrollView,
   Image,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import {
   Header,
@@ -26,14 +28,89 @@ import {
 } from 'react-native-responsive-screen';
 import ImagePicker from 'react-native-image-picker';
 import {TextInputMask} from 'react-native-masked-text';
+import {connect} from 'react-redux';
+import {addProduct} from '../public/redux/actions/products';
+import {API_KEY_URL} from 'react-native-dotenv';
 
 class AddProduct extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      image: null,
+      photo: null,
+      name: '',
+      description: '',
+      price: '',
+      stock: '',
+      filename: '',
+      uri: '',
+      nameErr: '',
+      filesize: '',
     };
   }
+
+  onAdd = async () => {
+    const {name, description, stock, price, uri, filename} = this.state;
+    const priceadd = price
+      .replace('Rp. ', '')
+      .split('.')
+      .join('');
+    let url = `${API_KEY_URL}/product`;
+    let data = new FormData();
+    data.append('sellerId', '1');
+    data.append('name', name);
+    data.append('description', description);
+    data.append('stock', stock);
+    data.append('price', priceadd);
+    data.append('photo', {
+      uri,
+      type: 'image/jpeg',
+      name: filename,
+    });
+
+    if (!filename) {
+      Alert.alert('Error!', 'Harus Upload Foto Ya!', [
+        {
+          text: 'Ok',
+          style: 'cancel',
+        },
+      ]);
+    } else if (this.state.filesize > 6 * 1024 * 1024) {
+      Alert.alert('Error!', 'Foto terlalu besar. Maksimal 6 MB', [
+        {
+          text: 'Ok',
+          style: 'cancel',
+        },
+      ]);
+    } else if (!name || !description || priceadd === '0' || !stock) {
+      Alert.alert('Error!', 'Semua Field harus diisi', [
+        {
+          text: 'Ok',
+          style: 'cancel',
+        },
+      ]);
+    } else {
+      await this.props
+        .add(url, data)
+        .then(() => {
+          Alert.alert(
+            'Success!',
+            'Berhasil Tambah Produk',
+            [
+              {
+                text: 'OK',
+                onPress: () => {
+                  this.props.navigation.push('BottomNavbar');
+                },
+              },
+            ],
+            {cancelable: false},
+          );
+        })
+        .catch(err => {
+          Alert.alert(err);
+        });
+    }
+  };
 
   selectImage = () => {
     const options = {};
@@ -47,8 +124,10 @@ class AddProduct extends PureComponent {
       } else {
         const source = {uri: response.uri, isStatic: true};
         this.setState({
-          image: source,
-          price: '',
+          photo: source,
+          uri: response.uri,
+          filename: response.fileName,
+          filesize: response.fileSize,
         });
       }
     });
@@ -67,9 +146,13 @@ class AddProduct extends PureComponent {
             <Title style={styles.title}>Tambah Produk</Title>
           </Body>
           <Right>
-            <Button success small>
-              <Text style={styles.addtext}>Tambah</Text>
-            </Button>
+            {this.props.products.isLoading ? (
+              <ActivityIndicator />
+            ) : (
+              <Button success small onPress={this.onAdd.bind(this)}>
+                <Text style={styles.addtext}>Tambah</Text>
+              </Button>
+            )}
           </Right>
         </Header>
         <View style={styles.viewimage}>
@@ -83,12 +166,12 @@ class AddProduct extends PureComponent {
           <Image
             style={styles.image}
             source={
-              !this.state.image
+              !this.state.photo
                 ? {
                     uri:
                       'https://developer.apple.com/library/archive/referencelibrary/GettingStarted/DevelopiOSAppsSwift/Art/defaultphoto_2x.png',
                   }
-                : this.state.image
+                : this.state.photo
             }
           />
         </View>
@@ -103,11 +186,16 @@ class AddProduct extends PureComponent {
           <View>
             <Item stackedLabel style={styles.item}>
               <Label>Nama Produk</Label>
-              <Input />
+              <Input onChangeText={value => this.setState({name: value})} />
             </Item>
             <Item stackedLabel style={styles.item}>
               <Label>Deskripsi Produk</Label>
-              <Input multiline={true} numberOfLines={4} style={styles.desc} />
+              <Input
+                multiline={true}
+                numberOfLines={4}
+                style={styles.desc}
+                onChangeText={value => this.setState({description: value})}
+              />
             </Item>
             <Item stackedLabel style={styles.item}>
               <Label>Harga</Label>
@@ -121,17 +209,20 @@ class AddProduct extends PureComponent {
                   unit: 'Rp. ',
                   suffixUnit: '',
                 }}
-                value={this.state.advanced}
-                onChangeText={text => {
+                value={this.state.price}
+                onChangeText={value => {
                   this.setState({
-                    advanced: text,
+                    price: value,
                   });
                 }}
               />
             </Item>
             <Item stackedLabel last style={styles.item}>
               <Label>Stok</Label>
-              <Input keyboardType="numeric" />
+              <Input
+                keyboardType="numeric"
+                onChangeText={value => this.setState({stock: value})}
+              />
             </Item>
           </View>
         </ScrollView>
@@ -210,4 +301,16 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withNavigation(AddProduct);
+const mapStateToProps = state => {
+  return {
+    products: state.products,
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  add: (url, data) => dispatch(addProduct(url, data)),
+});
+
+export default withNavigation(
+  connect(mapStateToProps, mapDispatchToProps)(AddProduct),
+);

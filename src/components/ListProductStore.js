@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, StyleSheet, View, Image, TouchableOpacity} from 'react-native';
+import {Text, StyleSheet, View, Image} from 'react-native';
 import NumberFormat from 'react-number-format';
 import {
   widthPercentageToDP as wp,
@@ -8,6 +8,7 @@ import {
 import {withNavigation} from 'react-navigation';
 import Icon from 'react-native-vector-icons/Entypo';
 import IconFA from 'react-native-vector-icons/FontAwesome';
+import {API_KEY_PHOTO} from 'react-native-dotenv';
 import {
   Menu,
   MenuOptions,
@@ -19,7 +20,7 @@ const {SlideInMenu} = renderers;
 
 class ListProductStore extends Component {
   render() {
-    const {item, navigation} = this.props;
+    const {item, navigation, onDelete} = this.props;
     return (
       <>
         <View style={styles.view}>
@@ -27,10 +28,16 @@ class ListProductStore extends Component {
             <View>
               <Image
                 style={styles.image}
-                source={{
-                  uri:
-                    'https://www.amwaytoday.co.id/kesehatan/info-produk/Bigger-is-Better.img.png/1567420073429.png',
-                }}
+                source={
+                  !item.photo
+                    ? {
+                        uri:
+                          'https://haes.ca/wp-content/plugins/everest-timeline/images/no-image-available.png',
+                      }
+                    : {
+                        uri: `${API_KEY_PHOTO}/product/${item.photo}`,
+                      }
+                }
               />
             </View>
             <View style={styles.viewname}>
@@ -41,10 +48,10 @@ class ListProductStore extends Component {
                 {item.name}
               </Text>
               <Text style={styles.textstok} ellipsizeMode="tail">
-                Stok: {item.stok}
+                Stok: {item.stock}
               </Text>
               <NumberFormat
-                value={item.code}
+                value={item.price}
                 displayType={'text'}
                 thousandSeparator={true}
                 prefix={'Rp. '}
@@ -59,16 +66,12 @@ class ListProductStore extends Component {
                   </MenuTrigger>
                   <MenuOptions>
                     <MenuOption
-                      onSelect={() =>
-                        navigation.navigate('EditProduct', {item})
-                      }
+                      onSelect={() => navigation.push('EditProduct', {item})}
                       style={styles.menuedit}>
                       <IconFA name="edit" size={30} style={styles.iconedit} />
                       <Text style={styles.textedit}>Ubah Produk</Text>
                     </MenuOption>
-                    <MenuOption
-                      onSelect={() => alert(`Delete ${item.id}`)}
-                      style={styles.menudelete}>
+                    <MenuOption onSelect={onDelete} style={styles.menudelete}>
                       <IconFA
                         name="trash-o"
                         size={30}

@@ -18,6 +18,7 @@ import {Item, Input} from 'native-base';
 import Products from './Products';
 import {withNavigation} from 'react-navigation';
 import {connect} from 'react-redux';
+import { AndroidBackHandler } from 'react-navigation-backhandler';
 import {getProducts} from '../public/redux/actions/products';
 import {API_KEY_URL} from 'react-native-dotenv';
 
@@ -34,7 +35,7 @@ class Home extends Component {
     this.setState({search: searchKey});
 
     try {
-      let url = `${API_KEY_URL}/api/v1/product?search=${searchKey}`;
+      let url = `${API_KEY_URL}/product?search=${searchKey}`;
       await this.props.get(url);
     } catch (err) {}
   };
@@ -49,10 +50,17 @@ class Home extends Component {
         }`);
 
     await this.props.get(url);
-    this.props.auth.token &&
-      BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+    
   };
 
+  onBackButtonPressAndroid = () => {
+    if (this.props.auth.token !== null) {
+        this.handleBackButton();
+      return true;
+    }
+    return false;
+  };
+  
   handleBackButton() {
     Alert.alert(
       'Exit App',
@@ -75,14 +83,11 @@ class Home extends Component {
     return true;
   }
 
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
-  }
-
   render() {
     const {isClick} = this.state;
     return (
       <>
+      <AndroidBackHandler onBackPress={this.onBackButtonPressAndroid}>
         <Header style={styles.header}>
           <Body>
             <Title style={styles.title}>Home</Title>
@@ -138,6 +143,7 @@ class Home extends Component {
             </View>
           </TouchableOpacity>
         </View>
+      </AndroidBackHandler>
       </>
     );
   }
