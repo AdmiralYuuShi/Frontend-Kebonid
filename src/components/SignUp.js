@@ -1,23 +1,59 @@
 import * as Yup from 'yup';
 import {Formik} from 'formik';
 // import RNSecureStorage, { ACCESSIBLE } from 'rn-secure-storage'
-// import { fetchLogin } from '../public/redux/actions/login'
-// import { connect } from 'react-redux'
+import { signUp } from '../public/redux/actions/auth'
+import { connect } from 'react-redux'
 import {Button, Container, Label} from 'native-base';
 import {TouchableOpacity, ScrollView} from 'react-native-gesture-handler';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {withNavigation} from 'react-navigation';
+import {StackActions, NavigationActions, withNavigation} from 'react-navigation';
 import React, {Component, Fragment} from 'react';
-import {TextInput, Text, Image, StyleSheet, View, Item} from 'react-native';
+import {TextInput, Text, Image, StyleSheet, View, Item, Alert} from 'react-native';
 import {CheckBox} from 'react-native-elements';
+import {API_KEY_URL} from 'react-native-dotenv';
 import PasswordInputText from 'react-native-hide-show-password-input';
+import AwesomeAlerts from 'react-native-awesome-alerts';
 class SignUp extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      showAlert: false,
+      color: '',
+      message: '',
+    };
   }
+  getSignUp(values){
+    const data = {
+      email: values.email,
+      password: values.password,
+      name: values.email.split('@')[0]
+    };
+       this.props.signUp(API_KEY_URL+'/auth/register', data)
+       .then(result => {
+        this.setState({
+          showAlert: true,
+          color: '#42B549',
+          message: this.props.auth.message,
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({
+          showAlert: true,
+          color: '#E53935',
+          message: this.props.auth.message,
+        });
+      });
+  };
+
+  hideAlert = () => {
+    this.setState({
+      showAlert: false,
+    });
+  };
   render() {
     return (
       <Formik
@@ -114,34 +150,70 @@ class SignUp extends Component {
                   {touched.agreeToTerms && errors.agreeToTerms && (
                     <Text style={style.textError}>{errors.agreeToTerms}</Text>
                   )}
-                  <TouchableOpacity onPress={() => alert('makanya inget dong')}>
-                    <Text style={style.textForget}>Forget password ?</Text>
-                  </TouchableOpacity>
                   <Button
                     full
                     title="Sign Up"
                     disabled={!isValid}
-                    onPress={() => this.props.navigation.navigate('Register')}
+                    onPress={handleSubmit}
                     style={style.signUp}>
                     <Text style={style.textButtonSignUp}>Sign Up</Text>
                   </Button>
                   <Button
                     full
                     title="Sign In"
-                    onPress={() => this.props.navigation.navigate('Login')}
+                    onPress={() => {
+                      const resetAction = StackActions.reset({
+                        index: 0,
+                        actions: [NavigationActions.navigate({routeName: 'Login'})],
+                      });
+                      this.props.navigation.dispatch(resetAction);
+                    }}
                     style={style.buttonSignIn}>
                     <Text style={style.textButtonSignIn}>Sign In</Text>
                   </Button>
                 </View>
               </Container>
             </ScrollView>
+            <AwesomeAlerts
+              show={this.state.showAlert}
+              showProgress={false}
+              message={this.state.message}
+              closeOnTouchOutSide={true}
+              closeOnHardwareBackPress={false}
+              showCancelButton={false}
+              showConfirmButton={true}
+              confirmText="OK"
+              confirmButtonColor={this.state.color}
+              onConfirmPressed={() => {
+                this.hideAlert();
+                this.state.message === 'Successfully Register New User'
+                  ? 
+                    this.props.navigation.dispatch(
+                      StackActions.reset({
+                        index: 0,
+                        actions: [NavigationActions.navigate({routeName: 'Login'})],
+                      })
+                    )
+                  
+                  : this.forceUpdate();
+              }}
+            />
           </Fragment>
         )}
       </Formik>
     );
   }
 }
-export default withNavigation(SignUp);
+const mapStateToProps = state => ({
+  auth: state.auth,
+});
+const mapDispatchToProps = dispatch => ({
+  signUp: (url, data) => dispatch(signUp(url, data)),
+});
+
+export default withNavigation(connect(
+  mapStateToProps, mapDispatchToProps
+)(SignUp));
 
 const style = StyleSheet.create({
   SignUp: {
