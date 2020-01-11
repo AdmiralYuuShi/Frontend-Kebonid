@@ -41,10 +41,6 @@ class Home extends Component {
   };
 
   componentDidMount = async () => {
-    // BackHandler.addEventListener(
-    //   'hardwareBackPress',
-    //   this.handleBackButtonPressAndroid
-    // );
     const sortVal = this.props.navigation.getParam('sortValue', '');
     let url = '';
     !sortVal
@@ -58,13 +54,6 @@ class Home extends Component {
   };
 
   onBackButtonPressAndroid = () => {
-    /*
-    *   Returning `true` from `onBackButtonPressAndroid` denotes that we have handled the event,
-    *   and react-navigation's lister will not get called, thus not popping the screen.
-    *
-    *   Returning `false` will cause the event to bubble up and react-navigation's listener will pop the screen.
-    * */
- 
     if (this.props.auth.token !== null) {
         this.handleBackButton();
       return true;
