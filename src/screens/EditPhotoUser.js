@@ -1,10 +1,11 @@
 import React from 'react';
 import EditPhoto from '../components/EditPhotoUser';
 
-const EditPhotoUser = () => {
+const EditPhotoUser = props => {
+  const photo = props.navigation.getParam('photo', {});
   return (
     <>
-      <EditPhoto />
+      <EditPhoto photo={photo} />
     </>
   );
 };
