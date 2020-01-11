@@ -117,7 +117,7 @@ class Login extends Component {
                     onPress={() =>
                       this.props.navigation.navigate('RequestForgotPassword')
                     }>
-                    <Text style={style.forgot}>Forget password ?</Text>
+                    <Text style={style.forgot}>Forgot password ?</Text>
                   </TouchableOpacity>
                   <Button
                     full
