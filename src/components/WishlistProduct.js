@@ -8,30 +8,37 @@ import {
 } from 'react-native-responsive-screen';
 import {withNavigation} from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import {API_KEY_PHOTO} from 'react-native-dotenv';
 
 const WishlistProduct = props => {
-  const {item, navigation} = props;
+  const {item, navigation, onDelete} = props;
   return (
     <>
       <View style={styles.view}>
         <TouchableOpacity
           onPress={() =>
             navigation.navigate('Product', {
-              product: item,
+              id_product: item.product_id,
             })
           }>
           <Image
             style={styles.image}
-            source={{
-              uri:
-                'https://www.amwaytoday.co.id/kesehatan/info-produk/Bigger-is-Better.img.png/1567420073429.png',
-            }}
+            source={
+              !item.photo
+                ? {
+                    uri:
+                      'https://haes.ca/wp-content/plugins/everest-timeline/images/no-image-available.png',
+                  }
+                : {
+                    uri: `${API_KEY_PHOTO}/product/${item.photo}`,
+                  }
+            }
           />
           <Text style={styles.textname} numberOfLines={1} ellipsizeMode="tail">
             {item.name}
           </Text>
           <NumberFormat
-            value={item.code}
+            value={item.price}
             displayType={'text'}
             thousandSeparator={true}
             prefix={'Rp. '}
@@ -39,7 +46,7 @@ const WishlistProduct = props => {
           />
         </TouchableOpacity>
         <View style={styles.button}>
-          <Button style={styles.btndelete}>
+          <Button style={styles.btndelete} onPress={onDelete}>
             <Icon name="trash" size={20} color={'#979A9A'} />
           </Button>
           <Button style={styles.btnbeli}>
@@ -68,13 +75,14 @@ const styles = StyleSheet.create({
   },
   textname: {
     width: wp('42%'),
-    fontSize: hp('2.5%'),
+    fontSize: hp('2%'),
     marginLeft: wp('2.5%'),
     marginRight: wp('1.5%'),
     marginTop: hp('1%'),
+    fontWeight: 'bold',
   },
   textprice: {
-    fontSize: hp('2.2%'),
+    fontSize: hp('1.8%'),
     marginLeft: wp('2.5%'),
     color: '#E5511B',
   },

@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
-import {StyleSheet, TouchableOpacity, Image, View, Text} from 'react-native';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  View,
+  Text,
+  Alert,
+} from 'react-native';
 import {
   Header,
   Body,
@@ -10,6 +17,7 @@ import {
   Thumbnail,
 } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Icon1 from 'react-native-vector-icons/FontAwesome';
 import {withNavigation, SafeAreaView} from 'react-navigation';
 import {
   widthPercentageToDP as wp,
@@ -19,12 +27,16 @@ import {ScrollView} from 'react-native-gesture-handler';
 import NumberFormat from 'react-number-format';
 import {connect} from 'react-redux';
 import {getProduct} from '../public/redux/actions/product';
+import {addWishlist, deleteWishlist} from '../public/redux/actions/wishlist';
+import {getAllWishlist} from '../public/redux/actions/wishlists';
 import {API_KEY_URL, API_KEY_PHOTO} from 'react-native-dotenv';
 
 class Product extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      customerId: this.props.auth.user.id,
+      productId: '',
       product_name: '',
       product_photo: null,
       price: 0,
@@ -32,8 +44,40 @@ class Product extends Component {
       description: '',
       sellers_name: '',
       sellers_photo: null,
+      allWishlist: [],
+      checkWishlistC: '',
+      checkWishlistP: '',
     };
   }
+
+  onWhislist = async () => {
+    const {customerId, productId} = this.state;
+    let url = `${API_KEY_URL}/wishlist`;
+    let data = {customerId, productId};
+
+    await this.props
+      .addWishlist(url, data)
+      .then(() => {
+        Alert.alert(
+          'Success!',
+          'Berhasil Ditambahkan ke Wishlist Anda',
+          [
+            {
+              text: 'OK',
+              onPress: () => {
+                this.props.navigation.push('Product', {
+                  id_product: productId,
+                });
+              },
+            },
+          ],
+          {cancelable: false},
+        );
+      })
+      .catch(err => {
+        Alert.alert(err);
+      });
+  };
 
   componentDidMount() {
     const id_product = this.props.navigation.getParam('id_product', '');
@@ -41,6 +85,7 @@ class Product extends Component {
     this.props.get(url).then(() => {
       this.props.product.product.map(p => {
         return this.setState({
+          productId: p.id,
           product_name: p.product_name,
           product_photo: p.product_photo,
           price: p.price,
@@ -51,7 +96,49 @@ class Product extends Component {
         });
       });
     });
+
+    this.props.getAll(`${API_KEY_URL}/wishlist`).then(() => {
+      this.setState({
+        checkWishlistP: this.props.wishlists.wishlists.findIndex(
+          w => w.product_id === id_product,
+        ),
+        checkWishlistC: this.props.wishlists.wishlists.findIndex(
+          w => w.customer_id === this.state.customerId,
+        ),
+      });
+    });
   }
+
+  onDelete = async () => {
+    // const id = this.state.allWishlist.find(
+    //   x =>
+    //     x.product_id === this.state.productId &&
+    //     x.customer_id === this.state.customerId,
+    // ).id;
+    // let url = `${API_KEY_URL}/wishlist/${id}`;
+    // await this.props
+    //   .delete(url)
+    //   .then(() => {
+    //     Alert.alert(
+    //       'Success!',
+    //       'Berhasil Hapus Produk dari Wishlist Anda',
+    //       [
+    //         {
+    //           text: 'OK',
+    //           onPress: () => {
+    //             this.props.navigation.push('Product', {
+    //               id_product: this.state.productId,
+    //             });
+    //           },
+    //         },
+    //       ],
+    //       {cancelable: false},
+    //     );
+    //   })
+    //   .catch(err => {
+    //     Alert.alert(err);
+    //   });
+  };
 
   render() {
     const {
@@ -62,12 +149,15 @@ class Product extends Component {
       description,
       sellers_name,
       sellers_photo,
+      checkWishlistP,
+      checkWishlistC,
     } = this.state;
     return (
       <>
         <Header style={styles.header}>
           <Left>
-            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('BottomNavbar')}>
               <Icon style={styles.icon} name="angle-left" size={wp('5.5%')} />
             </TouchableOpacity>
           </Left>
@@ -91,7 +181,16 @@ class Product extends Component {
               }
             />
             <View style={styles.floating}>
-              <Icon name="heart" size={wp('10%')} color={'#979A9A'} />
+              {(checkWishlistP === -1 || checkWishlistC === -1) && (
+                <TouchableOpacity onPress={this.onWhislist.bind(this)}>
+                  <Icon1 name="heart" size={wp('10%')} color={'#979A9A'} />
+                </TouchableOpacity>
+              )}
+              {checkWishlistP !== -1 && checkWishlistC !== -1 && (
+                <TouchableOpacity>
+                  <Icon1 name="heart" size={wp('10%')} color={'#03AC0E'} />
+                </TouchableOpacity>
+              )}
             </View>
 
             <Text style={styles.textname} numberOfLines={2}>
@@ -167,7 +266,7 @@ const styles = StyleSheet.create({
   image: {
     width: wp('100%'),
     height: hp('45%'),
-    resizeMode: 'stretch',
+    resizeMode: 'cover',
   },
   title: {
     color: 'black',
@@ -296,11 +395,17 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     product: state.product,
+    wishlist: state.wishlist,
+    auth: state.auth,
+    wishlists: state.wishlists,
   };
 };
 
 const mapDispatchToProps = dispatch => ({
   get: url => dispatch(getProduct(url)),
+  getAll: url => dispatch(getAllWishlist(url)),
+  addWishlist: (url, data) => dispatch(addWishlist(url, data)),
+  delete: url => dispatch(deleteWishlist(url)),
 });
 
 export default withNavigation(
