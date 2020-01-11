@@ -20,10 +20,10 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {Bubbles} from 'react-native-loader';
-import {fetchUpdatePhotoUsers} from '../public/redux/actions/users';
+import {fetchUpdatePhotoStore} from '../public/redux/actions/store';
 import {connect} from 'react-redux';
 import {API_KEY_PHOTO} from 'react-native-dotenv';
-class EditPhotoUser extends Component {
+class EditPhotoStore extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -56,11 +56,9 @@ class EditPhotoUser extends Component {
       type: 'image/jpeg',
       name: this.state.fileName,
     };
-    console.log(photo);
-
     const formData = new FormData();
     formData.append('id', this.state.id);
-    formData.append('file', photo);
+    formData.append('photo', photo);
     const config = {
       headers: {
         'content-type': 'multipart/form-data' + formData,
@@ -78,9 +76,15 @@ class EditPhotoUser extends Component {
         },
         {
           text: 'OK',
-          onPress: () => {
-            this.backTo();
-          },
+          onPress: () =>
+            Alert.alert('Sukses!', 'Foto berhasil dirubah', [
+              {
+                text: 'OK',
+                onPress: () => {
+                  this.backTo();
+                },
+              },
+            ]),
         },
       ],
       {cancelable: false},
@@ -179,11 +183,23 @@ class EditPhotoUser extends Component {
                       onPress={this.UploadPhoto}
                       title="PILIH FOTO"
                     />
-                    <Button
-                      buttonStyle={style.button1}
-                      title="SIMPAN"
-                      onPress={this.editPhoto}
-                    />
+                    {photoErr ? (
+                      <Button
+                        disabled
+                        buttonStyle={style.button1}
+                        title="SIMPAN"
+                        // eslint-disable-next-line no-alert
+                        onPress={alert(
+                          'Silahkan pilih lagi foto yang sesuai ya',
+                        )}
+                      />
+                    ) : (
+                      <Button
+                        buttonStyle={style.button1}
+                        title="SIMPAN"
+                        onPress={this.editPhoto}
+                      />
+                    )}
                   </Body>
                 </CardItem>
               </Card>
@@ -200,13 +216,12 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchUpdate: (id, data, config) =>
-    dispatch(fetchUpdatePhotoUsers(id, data, config)),
+  fetchUpdate: (data, config) => dispatch(fetchUpdatePhotoStore(data, config)),
 });
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(withNavigation(EditPhotoUser));
+)(withNavigation(EditPhotoStore));
 const style = StyleSheet.create({
   cardWrapper: {
     flex: 0,
