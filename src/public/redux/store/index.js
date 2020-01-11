@@ -16,6 +16,7 @@ const persistConfig = {
   // Whitelist (Save Specific Reducers)
   whitelist: ['auth'],
   // Blacklist (Don't Save Specific Reducers)
+  blacklist: ['products', 'users'],
   blacklist: ['products', 'payment'],
 };
 

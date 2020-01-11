@@ -1,10 +1,12 @@
 import React from 'react';
 import Edit from '../components/EditUser';
 
-const EditUser = () => {
+const EditUser = props => {
+  console.log(props.navigation.getParam);
+  const data = props.navigation.getParam('data', {});
   return (
     <>
-      <Edit />
+      <Edit data={data} />
     </>
   );
 };
