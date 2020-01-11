@@ -30,8 +30,7 @@ const Start = props => {
             <Text style={styles.textsignup}>Sign Up</Text>
           </Button>
         </View>
-        <TouchableOpacity
-          onPress={() => props.navigation.navigate('BottomNavbar')}>
+        <TouchableOpacity onPress={() => props.navigation.push('BottomNavbar')}>
           <View style={styles.skip}>
             <Text style={styles.skiptext}>Lewati</Text>
           </View>
