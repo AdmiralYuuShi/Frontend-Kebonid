@@ -22,6 +22,7 @@ import {logout} from '../public/redux/actions/auth';
 import {fetchDetailUsers} from '../public/redux/actions/users';
 import {connect} from 'react-redux';
 import {Bubbles} from 'react-native-loader';
+
 import {API_KEY_PHOTO} from 'react-native-dotenv';
 class ProfileUser extends Component {
   constructor(props) {
@@ -39,7 +40,7 @@ class ProfileUser extends Component {
     const token = this.props.auth.token;
     if (this.props.auth.user.id) {
       this.props.get(this.props.auth.user.id).then(() => {
-        // console.log(this.props.users.users.result);
+        // console.log(this.props.users.users.result); 
         this.props.users.users.result.map(item => {
           return this.setState({
             name: item.name,
