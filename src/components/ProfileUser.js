@@ -1,5 +1,11 @@
 import React, {Component} from 'react';
-import {StyleSheet, ScrollView, Text, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/Fontisto';
@@ -13,15 +19,86 @@ import {
 import {Button} from 'react-native-paper';
 import {Rating} from 'react-native-elements';
 import {logout} from '../public/redux/actions/auth';
+import {fetchDetailUsers} from '../public/redux/actions/users';
 import {connect} from 'react-redux';
-
+import jwtDecode from 'jwt-decode';
+import {API_KEY_PHOTO} from 'react-native-dotenv';
 class ProfileUser extends Component {
-  
+  constructor(props) {
+    super(props);
+    this.state = {
+      id: '',
+      name: '',
+      phone: '',
+      photo: '',
+      address: '',
+      isLoading: false,
+    };
+  }
+  componentDidMount() {
+    const token = this.props.auth.token;
+    if (this.props.auth.user.id) {
+      this.props.get(this.props.auth.user.id).then(() => {
+        // console.log(this.props.users.users.result);
+        this.props.users.users.result.map(item => {
+          return this.setState({
+            name: item.name,
+            id: item.id,
+            phone: item.phone,
+            photo: item.photo
+              ? `${API_KEY_PHOTO}/customer/${item.photo}`
+              : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAQeOYC_Uqrxp5lVzs-DalVZJg3t6cCtAFyMHeI2NejPr1-TsUUQ&s',
+            address: item.address,
+          });
+        });
+      });
+    }
+    if (this.props.idUser) {
+      this.props.get(this.props.idUser).then(() => {
+        // console.log(this.props.users.users.result);
+        this.props.users.users.result.map(item => {
+          return this.setState({
+            name: item.name,
+            id: item.id,
+            phone: item.phone,
+            photo: item.photo
+              ? `${API_KEY_PHOTO}/customer/${item.photo}`
+              : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAQeOYC_Uqrxp5lVzs-DalVZJg3t6cCtAFyMHeI2NejPr1-TsUUQ&s',
+            address: item.address,
+          });
+        });
+      });
+    }
+    if (!token) {
+      this.props.navigation.navigate('Login');
+    }
+  }
   handleLogout = _ => {
     this.props.logoutUser();
-    this.props.navigation.push('Start');
-  }
-  
+    Alert.alert(
+      'Kamu yakin keluar?',
+      'Jangan lupa balik yah',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'OK',
+          onPress: () =>
+            Alert.alert('Success!', 'See you', [
+              {
+                text: 'OK',
+                onPress: () => this.props.navigation.push('Start'),
+              },
+            ]),
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
   render() {
     return (
       <>
@@ -34,7 +111,7 @@ class ProfileUser extends Component {
                 }}>
                 <Avatar
                   size="xlarge"
-                  source={require('../assets/LogoDummy.png')}
+                  source={{uri: this.state.photo}}
                   showEditButton
                   activeOpacity={0.7}
                   title="PROFIL"
@@ -42,17 +119,16 @@ class ProfileUser extends Component {
               </TouchableOpacity>
             </View>
             <View>
-              <Text style={style.textProfil}>Arkademy</Text>
-              <Text style={style.textProfil1}>08123456789</Text>
-              <Text style={style.textProfil1}>arka@gmail.com</Text>
-              <Text style={style.textProfil1}>
-                RT/RW 002/002 Kampung Melayu Tebet, Jakarta Selatan
-              </Text>
+              <Text style={style.textProfil}>{this.state.name}</Text>
+              <Text style={style.textProfil1}>{this.state.phone}</Text>
+              <Text style={style.textProfil1}>{this.state.address}</Text>
             </View>
             <View>
               <TouchableOpacity
                 onPress={() => {
-                  this.props.navigation.push('EditUser');
+                  this.props.navigation.push('EditUser', {
+                    data: this.state,
+                  });
                 }}>
                 <Button style={style.button}>
                   <Text style={style.textButton}>Edit</Text>
@@ -155,12 +231,18 @@ const style = StyleSheet.create({
     marginBottom: hp('2%'),
   },
 });
-
+const mapStateToProps = state => {
+  return {
+    users: state.users,
+    auth: state.auth,
+  };
+};
 const mapDispatchToProps = dispatch => ({
+  get: id => dispatch(fetchDetailUsers(id)),
   logoutUser: _ => dispatch(logout()),
 });
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 )(withNavigation(ProfileUser));

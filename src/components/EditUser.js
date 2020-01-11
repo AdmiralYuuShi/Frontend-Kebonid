@@ -1,16 +1,86 @@
 import React, {Component} from 'react';
-import {Text, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {Container, Header, Body, Title, Left} from 'native-base';
+import {Text, StyleSheet, TouchableOpacity, View, Alert} from 'react-native';
+import {
+  Container,
+  Header,
+  Body,
+  Title,
+  Left,
+  Form,
+  Item,
+  Label,
+  Input,
+} from 'native-base';
 import {Button} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import {Formik} from 'formik';
-import {Input} from 'react-native-elements';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {withNavigation} from 'react-navigation';
+import {fetchUpdateUsers} from '../public/redux/actions/users';
+import {connect} from 'react-redux';
+import {API_KEY_PHOTO} from 'react-native-dotenv';
 class EditUser extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      id: '',
+      name: '',
+      phone: '',
+      photo: '',
+      address: '',
+      isLoading: false,
+    };
+    this.handleEdit = this.handleEdit.bind(this);
+  }
+  handleEdit = () => {
+    const {name, phone, address, id} = this.state;
+    console.log(address);
+    if (!name || !phone || !address) {
+      alert('Semua isi form harus di isi');
+    } else {
+      this.props.fetchUpdate(id, {name, phone, address});
+      Alert.alert(
+        'Submit form?',
+        'Data kamu akan diperbaharui jika menekan ok',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: 'OK',
+            onPress: () =>
+              Alert.alert('Success!', 'Berhasil ubah data', [
+                {
+                  text: 'OK',
+                  onPress: () =>
+                    this.props.navigation.push('Profile', {
+                      id: id,
+                    }),
+                },
+              ]),
+          },
+        ],
+        {cancelable: false},
+      );
+    }
+  };
+
+  componentDidMount() {
+    const item = this.props.data;
+    return this.setState({
+      name: item.name,
+      id: item.id,
+      phone: item.phone,
+      photo: item.photo
+        ? `${API_KEY_PHOTO}/customer/${item.photo}`
+        : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAQeOYC_Uqrxp5lVzs-DalVZJg3t6cCtAFyMHeI2NejPr1-TsUUQ&s',
+      address: item.address,
+    });
+  }
   render() {
     return (
       <>
@@ -24,61 +94,77 @@ class EditUser extends Component {
             <Title style={style.title}>Edit Profile</Title>
           </Body>
         </Header>
-        <Formik
-          initialValues={{email: '', name: '', hp: '', address: ''}}
-          onSubmit={values => console.log(values)}>
-          {({handleChange, handleBlur, handleSubmit, values}) => (
-            <View style={style.form}>
+        <Form>
+          <View style={style.form}>
+            <Item stackedLabel>
+              <Label>Name</Label>
               <Input
-                onChangeText={handleChange('name')}
-                onBlur={handleBlur('name')}
-                placeholder="Name"
-                value={values.name}
-                leftIcon={<Icon name="user" size={wp('6%')} color="green" />}
+                type="text"
+                id="Name"
+                name="Name"
+                value={this.state.name}
+                onChangeText={value => {
+                  this.setState({
+                    name: value,
+                  });
+                }}
               />
-
+            </Item>
+            <Item stackedLabel>
+              <Label>Phone</Label>
               <Input
-                onChangeText={handleChange('email')}
-                onBlur={handleBlur('email')}
-                placeholder="E-mail"
-                value={values.email}
-                leftIcon={
-                  <Icon name="mail-bulk" size={wp('6%')} color="green" />
-                }
+                type="text"
+                id="phone"
+                name="phone"
+                value={this.state.phone}
+                onChangeText={value => {
+                  this.setState({
+                    phone: value,
+                  });
+                }}
               />
+            </Item>
+            <Item stackedLabel>
+              <Label>Address</Label>
               <Input
-                onChangeText={handleChange('hp')}
-                onBlur={handleBlur('hp')}
-                placeholder="No. Handphone"
-                value={values.hp}
-                leftIcon={<Icon name="phone" size={wp('6%')} color="green" />}
+                type="text"
+                id="address"
+                name="address"
+                value={this.state.address}
+                onChangeText={value => {
+                  this.setState({
+                    address: value,
+                  });
+                }}
               />
-              <Input
-                onChangeText={handleChange('address')}
-                onBlur={handleBlur('address')}
-                placeholder="Alamat"
-                value={values.address}
-                leftIcon={
-                  <Icon name="search-location" size={wp('6%')} color="green" />
-                }
+            </Item>
+            <View style={style.buttonWrapper}>
+              <Button
+                onPress={this.handleEdit}
+                style={style.button}
+                title="Submit"
               />
-              <View style={style.buttonWrapper}>
-                <Button
-                  onPress={() => this.props.navigation.navigate('Profile')}
-                  style={style.button}
-                  title="Submit"
-                />
-              </View>
             </View>
-          )}
-        </Formik>
+          </View>
+        </Form>
 
         <Container />
       </>
     );
   }
 }
-export default withNavigation(EditUser);
+const mapStateToProps = state => ({
+  users: state.users,
+});
+
+const mapDispatchToProps = dispatch => ({
+  fetchUpdate: (id, data) => dispatch(fetchUpdateUsers(id, data)),
+});
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(withNavigation(EditUser));
+// export default withNavigation(EditUser);
 const style = StyleSheet.create({
   button: {
     backgroundColor: 'green',

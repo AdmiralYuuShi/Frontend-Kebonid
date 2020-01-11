@@ -18,6 +18,7 @@ import {
 } from 'react-native-responsive-screen';
 export default class Profile extends Component {
   render() {
+    const id = this.props.navigation.getParam('id', {});
     return (
       <Container>
         <Header style={style.bgWhite}>
@@ -32,7 +33,7 @@ export default class Profile extends Component {
             textStyle={style.cBlack}
             activeTextStyle={style.cGreen}
             activeTabStyle={style.bgWhite}>
-            <Tab1 />
+            <Tab1 idUser={id} />
           </Tab>
           <Tab
             heading="Akun penjual"

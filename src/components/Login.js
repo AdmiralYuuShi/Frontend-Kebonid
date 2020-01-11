@@ -1,8 +1,5 @@
 import * as Yup from 'yup';
 import {Formik} from 'formik';
-// import RNSecureStorage, { ACCESSIBLE } from 'rn-secure-storage'
-// import { fetchLogin } from '../public/redux/actions/login'
-// import { connect } from 'react-redux'
 import {Button, Container, Label} from 'native-base';
 import {TouchableOpacity, ScrollView} from 'react-native-gesture-handler';
 import {

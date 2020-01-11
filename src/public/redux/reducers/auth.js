@@ -32,6 +32,7 @@ const auth = (state = initialState, action) => {
         message: action.payload.data.message,
         detail: action.payload.data.detail,
         token: action.payload.data.token,
+        user: action.payload.data.user,
       };
     case 'LOGOUT':
       return {
