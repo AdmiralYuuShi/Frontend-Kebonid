@@ -27,7 +27,7 @@ export default createMaterialBottomTabNavigator(
         tabBarLabel: 'Wishlist',
         tabBarIcon: ({focused}) => (
           <Icon
-            name="star"
+            name="heart"
             size={20}
             color={!focused ? '#979A9A' : '#42B549'}
           />
