@@ -5,11 +5,13 @@ const initialState = {
   message: '',
   token: '',
   detail: '',
+  users: [],
 };
 
 const auth = (state = initialState, action) => {
   switch (action.type) {
     case 'LOGIN_PENDING':
+    case 'SIGNUP_PENDING':
       return {
         ...state,
         isLoading: true,
@@ -17,11 +19,13 @@ const auth = (state = initialState, action) => {
         isFulfilled: false,
       };
     case 'LOGIN_REJECTED':
+    case 'SIGNUP_REJECTED':
       return {
         ...state,
         isLoading: false,
         isRejected: true,
         isFulfilled: false,
+        message: action.payload.response.data.message
       };
     case 'LOGIN_FULFILLED':
       return {
@@ -33,19 +37,28 @@ const auth = (state = initialState, action) => {
         detail: action.payload.data.detail,
         token: action.payload.data.token,
       };
-    case 'LOGOUT':
+    case 'SIGNUP_FULFILLED':
       return {
         ...state,
         isLoading: false,
         isFulfilled: true,
         isRejected: false,
-        message: null,
-        detail: null,
-        token: null,
+        users: action.payload.data.user,
+        message: action.payload.data.message,
       };
-    default:
-      return state;
-  }
+      case 'LOGOUT':
+        return {
+          ...state,
+          isLoading: false,
+          isFulfilled: true,
+          isRejected: false,
+          message: null,
+          detail: null,
+          token: null,
+        };
+      default:
+        return state;
+    }
 };
 
 export default auth;

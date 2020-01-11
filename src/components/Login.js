@@ -9,7 +9,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {withNavigation} from 'react-navigation';
+import {StackActions, NavigationActions, withNavigation} from 'react-navigation';
 import React, {Component, Fragment} from 'react';
 import {TextInput, Text, Image, StyleSheet, View} from 'react-native';
 import PasswordInputText from 'react-native-hide-show-password-input';
@@ -133,7 +133,13 @@ class Login extends Component {
                   <Button
                     full
                     title="Sign Up"
-                    onPress={() => this.props.navigation.navigate('Register')}
+                    onPress={() => {
+                      const resetAction = StackActions.reset({
+                        index: 0,
+                        actions: [NavigationActions.navigate({routeName: 'Register'})],
+                      });
+                      this.props.navigation.dispatch(resetAction);
+                    }}
                     style={style.signup}>
                     <Text style={style.signuptext}>Sign Up</Text>
                   </Button>
