@@ -71,7 +71,8 @@ class ProductStore extends Component {
       <>
         <Header style={styles.header}>
           <Left>
-            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('BottomNavbar')}>
               <Icon style={styles.icon} name="angle-left" size={wp('5.5%')} />
             </TouchableOpacity>
           </Left>
@@ -80,7 +81,7 @@ class ProductStore extends Component {
           </Body>
           <Right>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('AddProduct')}>
+              onPress={() => this.props.navigation.push('AddProduct')}>
               <Icon style={styles.iconadd} name="plus" size={wp('5.5%')} />
             </TouchableOpacity>
           </Right>

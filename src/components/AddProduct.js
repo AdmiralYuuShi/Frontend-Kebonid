@@ -99,7 +99,7 @@ class AddProduct extends PureComponent {
               {
                 text: 'OK',
                 onPress: () => {
-                  this.props.navigation.push('BottomNavbar');
+                  this.props.navigation.push('ProductStore');
                 },
               },
             ],
