@@ -28,7 +28,10 @@ import RequestForgotPassword from './src/screens/RequestForgotPassword';
 import ResetPassword from './src/screens/ResetPassword';
 import Transaction from './src/screens/Transaction';
 import Invoice from './src/screens/Invoice';
+import EditStore from './src/screens/EditStore';
+import EditPhotoStore from './src/screens/EditPhotoStore';
 import GoToLogin from './src/screens/GoToLogin';
+import AddCart from './src/screens/AddCart';
 const AppNavigator = createStackNavigator(
   {
     Splash: {
@@ -63,6 +66,12 @@ const AppNavigator = createStackNavigator(
     },
     AddStoreAccount: {
       screen: AddStoreAccount,
+    },
+    EditPhotoStore: {
+      screen: EditPhotoStore,
+    },
+    EditStore: {
+      screen: EditStore,
     },
     BottomNavbar: {
       screen: BottomNavbar,
@@ -99,6 +108,9 @@ const AppNavigator = createStackNavigator(
     },
     GoToLogin: {
       screen: GoToLogin,
+    },
+    AddCart: {
+      screen: AddCart,
     },
   },
   {

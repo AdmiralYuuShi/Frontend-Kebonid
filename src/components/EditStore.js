@@ -18,10 +18,10 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {withNavigation} from 'react-navigation';
-import {fetchUpdateUsers} from '../public/redux/actions/users';
+import {fetchUpdateStore} from '../public/redux/actions/store';
 import {connect} from 'react-redux';
 import {API_KEY_PHOTO} from 'react-native-dotenv';
-class EditUser extends Component {
+class EditStore extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -56,10 +56,7 @@ class EditUser extends Component {
               Alert.alert('Success!', 'Berhasil ubah data', [
                 {
                   text: 'OK',
-                  onPress: () =>
-                    this.props.navigation.push('Profile', {
-                      id: id,
-                    }),
+                  onPress: () => this.props.navigation.push('BottomNavbar'),
                 },
               ]),
           },
@@ -76,7 +73,7 @@ class EditUser extends Component {
       id: item.id,
       phone: item.phone,
       photo: item.photo
-        ? `${API_KEY_PHOTO}/customer/${item.photo}`
+        ? `${API_KEY_PHOTO}/store/${item.photo}`
         : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAQeOYC_Uqrxp5lVzs-DalVZJg3t6cCtAFyMHeI2NejPr1-TsUUQ&s',
       address: item.address,
     });
@@ -154,16 +151,16 @@ class EditUser extends Component {
   }
 }
 const mapStateToProps = state => ({
-  users: state.users,
+  store: state.store,
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchUpdate: (id, data) => dispatch(fetchUpdateUsers(id, data)),
+  fetchUpdate: (id, data) => dispatch(fetchUpdateStore(id, data)),
 });
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(withNavigation(EditUser));
+)(withNavigation(EditStore));
 // export default withNavigation(EditUser);
 const style = StyleSheet.create({
   button: {

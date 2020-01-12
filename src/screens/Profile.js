@@ -9,6 +9,7 @@ import {
   Body,
   Title,
 } from 'native-base';
+import {withNavigation} from 'react-navigation';
 import Tab1 from '../components/ProfileUser';
 import Tab2 from '../components/ProfileStore';
 import Tab3 from '../components/AddStore';
@@ -16,9 +17,14 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-export default class Profile extends Component {
+import {connect} from 'react-redux';
+import {fetchDetailStore} from '../public/redux/actions/store';
+class Profile extends Component {
   render() {
     const id = this.props.navigation.getParam('id', {});
+    const isSeller = this.props.auth.user.isSeller;
+    console.log(this.props.auth.user);
+
     return (
       <Container>
         <Header style={style.bgWhite}>
@@ -41,21 +47,27 @@ export default class Profile extends Component {
             activeTextStyle={style.cGreen}
             tabStyle={style.bgWhite}
             activeTabStyle={style.bgWhite}>
-            <Tab2 />
-          </Tab>
-          <Tab
-            heading="Coba"
-            textStyle={style.cBlack}
-            activeTextStyle={style.cGreen}
-            tabStyle={style.bgWhite}
-            activeTabStyle={style.bgWhite}>
-            <Tab3 />
+            {isSeller === 1 ? <Tab2 /> : <Tab3 />}
           </Tab>
         </Tabs>
       </Container>
     );
   }
 }
+const mapStateToProps = state => {
+  return {
+    store: state.store,
+    auth: state.auth,
+  };
+};
+const mapDispatchToProps = dispatch => ({
+  get: id => dispatch(fetchDetailStore(id)),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(withNavigation(Profile));
 const style = StyleSheet.create({
   bgWhite: {
     backgroundColor: 'white',

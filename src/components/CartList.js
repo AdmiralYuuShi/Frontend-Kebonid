@@ -1,6 +1,13 @@
 import React, {Component} from 'react';
-import {Text, StyleSheet, View, Image, TouchableOpacity} from 'react-native';
-import {Button, Item, Label} from 'native-base';
+import {
+  Text,
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
+import {Button} from 'native-base';
 import NumberFormat from 'react-number-format';
 import {
   widthPercentageToDP as wp,
@@ -8,27 +15,34 @@ import {
 } from 'react-native-responsive-screen';
 import {withNavigation} from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import {API_KEY_PHOTO} from 'react-native-dotenv';
 
 class CartList extends Component {
   render() {
-    const {item, navigation, add, reduce, stok} = this.props;
+    const {item, navigation, onDelete, load} = this.props;
     return (
       <>
         <View style={styles.view}>
           <TouchableOpacity
             onPress={() =>
               navigation.navigate('Product', {
-                product: item,
+                id_product: item.product_id,
               })
             }>
             <View style={styles.viewlist}>
               <View>
                 <Image
                   style={styles.image}
-                  source={{
-                    uri:
-                      'https://www.amwaytoday.co.id/kesehatan/info-produk/Bigger-is-Better.img.png/1567420073429.png',
-                  }}
+                  source={
+                    !item.photo
+                      ? {
+                          uri:
+                            'https://haes.ca/wp-content/plugins/everest-timeline/images/no-image-available.png',
+                        }
+                      : {
+                          uri: `${API_KEY_PHOTO}/product/${item.photo}`,
+                        }
+                  }
                 />
               </View>
               <View style={styles.viewname}>
@@ -36,10 +50,10 @@ class CartList extends Component {
                   style={styles.textname}
                   numberOfLines={2}
                   ellipsizeMode="tail">
-                  {item.name}
+                  {item.product_name}
                 </Text>
                 <NumberFormat
-                  value={item.code}
+                  value={item.price}
                   displayType={'text'}
                   thousandSeparator={true}
                   prefix={'Rp. '}
@@ -47,12 +61,24 @@ class CartList extends Component {
                     <Text style={styles.textprice}>{value}</Text>
                   )}
                 />
+                <Text style={styles.textsub} ellipsizeMode="tail">
+                  Amount: {item.amount}
+                </Text>
+                <NumberFormat
+                  value={item.sub_total}
+                  displayType={'text'}
+                  thousandSeparator={true}
+                  prefix={'Rp. '}
+                  renderText={value => (
+                    <Text style={styles.textsub}>Sub Total: {value}</Text>
+                  )}
+                />
               </View>
             </View>
             <View style={styles.saparator} />
           </TouchableOpacity>
           <View style={styles.viewstok}>
-            {item.stok === 1 ? (
+            {/* {item.stok === 1 ? (
               <Button disabled style={styles.btnminusdisabled}>
                 <Icon name="minus" size={15} color={'#fff'} />
               </Button>
@@ -60,11 +86,11 @@ class CartList extends Component {
               <Button style={styles.btnminus} onPress={reduce}>
                 <Icon name="minus" size={15} color={'#fff'} />
               </Button>
-            )}
-            <Item>
-              <Label style={styles.inputstok}> {item.stok} </Label>
-            </Item>
-            {item.stok === item.totalStok ? (
+            )} */}
+            {/* <Item>
+              <Label style={styles.inputstok}> {item.amount} </Label>
+            </Item> */}
+            {/* {item.stok === item.totalStok ? (
               <Button disabled style={styles.btnplusdisabled}>
                 <Icon name="plus" size={15} color={'#fff'} />
               </Button>
@@ -72,10 +98,10 @@ class CartList extends Component {
               <Button style={styles.btnplus} onPress={add}>
                 <Icon name="plus" size={15} color={'#fff'} />
               </Button>
-            )}
+            )} */}
           </View>
           <View style={styles.button}>
-            <Button style={styles.btndelete}>
+            <Button style={styles.btndelete} onPress={onDelete}>
               <Icon name="trash" size={25} color={'#E74C3C'} />
               <Text style={styles.delete}>Hapus dari Keranjang</Text>
             </Button>
@@ -110,6 +136,12 @@ const styles = StyleSheet.create({
     fontSize: wp('5%'),
     fontWeight: 'bold',
   },
+  textsub: {
+    width: wp('60%'),
+    fontSize: wp('4.2%'),
+    fontWeight: 'bold',
+    color: '#A6ACAF',
+  },
   textprice: {
     fontSize: wp('4%'),
     color: '#E5511B',
@@ -127,6 +159,7 @@ const styles = StyleSheet.create({
     borderRadius: wp('2%'),
     justifyContent: 'center',
     backgroundColor: '#fff',
+    position: 'absolute',
   },
   delete: {
     fontSize: wp('5%'),
