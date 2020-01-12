@@ -29,6 +29,7 @@ import ResetPassword from './src/screens/ResetPassword';
 import Transaction from './src/screens/Transaction';
 import Invoice from './src/screens/Invoice';
 import GoToLogin from './src/screens/GoToLogin';
+import AddCart from './src/screens/AddCart';
 const AppNavigator = createStackNavigator(
   {
     Splash: {
@@ -99,6 +100,9 @@ const AppNavigator = createStackNavigator(
     },
     GoToLogin: {
       screen: GoToLogin,
+    },
+    AddCart: {
+      screen: AddCart,
     },
   },
   {
