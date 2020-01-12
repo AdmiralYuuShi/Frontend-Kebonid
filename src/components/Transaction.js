@@ -30,29 +30,6 @@ class Transaction extends Component {
     this.state = {
       selected: undefined,
       selectedBank: undefined,
-      total: 10000,
-      orderId: "qwerty333",
-      email: "mymaial@mail.com",
-      firstName: "Jimy",
-      lastName: "UwU",
-      itemDetails: [{
-        "id": "iniid999",
-        "price": 2000,
-        "quantity": 3,
-        "name": "Kopi"
-     },
-     {
-        "id": "iniid333",
-        "price": 4000,
-        "quantity": 1,
-        "name": "Susu"
-     },
-     {
-        "id": "iniid333",
-        "price": 4000,
-        "quantity": 1,
-        "name": "Susu"
-     }]
     };
   }
 
@@ -69,7 +46,7 @@ class Transaction extends Component {
   };
 
   getData = async() => {
-    const id = '52184134-cc7b-42a6-9b0f-24f4e7d7d77f'
+    const id = this.props.transactions.orderId
     const url = API_KEY_URL+'/transaction/latest/'+id
     await this.props.getTransaction(url)
     .then(result => {

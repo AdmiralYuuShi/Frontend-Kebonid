@@ -28,7 +28,6 @@ class Invoice extends Component {
               style={style.image}
             />
             {console.log(payment.status_code)}
-            {console.log(payment.actions[0].url)}
             {payment.status_code === '406' ? 
             <View style={style.wrapper}>
               <Text style={{fontWeight: 'bold', fontSize: 50}}>{payment.status_code}</Text>
