@@ -85,6 +85,33 @@ const cart = (state = initialState, action) => {
         cart: [],
       };
 
+    case 'AMOUNT_PENDING': {
+      return {
+        ...state,
+        isLoading: true,
+        isRejected: false,
+        isFulfilled: false,
+      };
+    }
+
+    case 'AMOUNT_FULFILLED': {
+      return {
+        ...state,
+        cart: action.payload.data,
+        isLoading: false,
+        isFulfilled: true,
+        isRejected: false,
+      };
+    }
+
+    case 'AMOUNT_REJECTED': {
+      return {
+        ...state,
+        isLoading: false,
+        isRejected: true,
+      };
+    }
+
     default:
       return state;
   }

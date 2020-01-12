@@ -22,9 +22,8 @@ import {logout} from '../public/redux/actions/auth';
 import {fetchDetailUsers} from '../public/redux/actions/users';
 import {connect} from 'react-redux';
 import {Bubbles} from 'react-native-loader';
-
 import {API_KEY_PHOTO} from 'react-native-dotenv';
-import jwtDecode from 'jwt-decode';
+
 class ProfileUser extends Component {
   constructor(props) {
     super(props);
@@ -38,13 +37,11 @@ class ProfileUser extends Component {
     };
   }
   componentDidMount() {
-    const token = this.props.auth.token;
-    const decoded = jwtDecode(token);
     console.log(this.props.auth.detail);
 
     if (this.props.auth.user.id) {
       this.props.get(this.props.auth.user.id).then(() => {
-        // console.log(this.props.users.users.result); 
+        // console.log(this.props.users.users.result);
         this.props.users.users.result.map(item => {
           return this.setState({
             name: item.name,

@@ -36,7 +36,7 @@ class Cart extends Component {
     const id = this.props.auth.user.id;
     let url = `${API_KEY_URL}/cart/${id}`;
     await this.props.get(url);
-    console.log(this.props.cart.cart)
+    console.log(this.props.cart.cart);
   };
 
   handlePay = _ => {
@@ -44,22 +44,23 @@ class Cart extends Component {
     let data = [];
     this.props.cart.cart.map(cart => {
       data.push({
-        customerId: cart.customer_id, 
-        productId: cart.product_id, 
-        productName: cart.product_name, 
-        amount: cart.amount, 
-        price: cart.price, 
-        status: 'on process'
+        customerId: cart.customer_id,
+        productId: cart.product_id,
+        productName: cart.product_name,
+        amount: cart.amount,
+        price: cart.price,
+        status: 'on process',
+      });
+    });
+    this.props
+      .createTransaction(url, data)
+      .then(res => {
+        this.props.navigation.navigate('Transaction');
       })
-    })
-    this.props.createTransaction(url, data)
-    .then(res => {
-      this.props.navigation.navigate('Transaction')
-    })
-    .catch(err => {
-      console.log(err)
-    })
-  }
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   apiCall = async () => {
     this.setState({load: true});
@@ -87,7 +88,13 @@ class Cart extends Component {
         this.setState({load: false});
       })
       .catch(err => {
-        Alert.alert(err);
+        console.log(err);
+        Alert.alert('Err!', `${err}`, [
+          {
+            text: 'Ok',
+            style: 'cancel',
+          },
+        ]);
         this.setState({load: false});
       });
   };

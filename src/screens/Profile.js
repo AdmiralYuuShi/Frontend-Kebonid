@@ -71,6 +71,7 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps,
 )(withNavigation(Profile));
+
 const style = StyleSheet.create({
   bgWhite: {
     backgroundColor: 'white',
