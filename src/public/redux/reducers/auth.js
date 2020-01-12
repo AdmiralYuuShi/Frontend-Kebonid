@@ -7,6 +7,7 @@ const initialState = {
   detail: '',
   data: '',
   users: [],
+  user: {isSeller: 0},
 };
 
 const auth = (state = initialState, action) => {

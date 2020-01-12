@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Text, StyleSheet, View, ScrollView, Image} from 'react-native';
-import {Header, Body, Title, Button, Card, CardItem} from 'native-base';
+import {Header, Body, Title, Button, Card, CardItem, Input} from 'native-base';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -76,9 +76,10 @@ class Invoice extends Component {
               source={{uri: payment.actions[0].url}}
             /> */}
             <Image
-          style={{width: 300, height: 300}}
-          source={{uri: payment.actions[0].url}}
-        />
+              style={{width: 300, height: 300}}
+              source={{uri: payment.actions[0].url}}
+            />
+            <Input placeholder='Disabled Textbox' value={payment.actions[0].url} />
               <View style={style.buttonWrapper}>
                 <Button
                   onPress={() => this.props.navigation.push('BottomNavbar')}
