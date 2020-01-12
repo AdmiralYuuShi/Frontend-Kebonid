@@ -7,6 +7,7 @@ import {
   Picker,
   Form,
   Item,
+  H3,
 } from 'native-base';
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import {
@@ -20,6 +21,8 @@ import {StyleSheet, View, Text, ActivityIndicator} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {Divider, Image} from 'react-native-elements';
 import {payment} from '../public/redux/actions/payment';
+import {getTransaction} from '../public/redux/actions/transaction';
+import {API_KEY_URL} from 'react-native-dotenv';
 
 class Transaction extends Component {
   constructor(props) {
@@ -43,9 +46,40 @@ class Transaction extends Component {
         "price": 4000,
         "quantity": 1,
         "name": "Susu"
+     },
+     {
+        "id": "iniid333",
+        "price": 4000,
+        "quantity": 1,
+        "name": "Susu"
      }]
     };
   }
+
+  componentDidMount() {
+    this.getData();
+    this.focusListener = this.props.navigation.addListener('willFocus', () => {
+      this.onFocusFunction();
+    });
+  }
+
+  onFocusFunction = () => {
+    // do some stuff on every screen focus
+    this.getData();
+  };
+
+  getData = async() => {
+    const id = '52184134-cc7b-42a6-9b0f-24f4e7d7d77f'
+    const url = API_KEY_URL+'/transaction/latest/'+id
+    await this.props.getTransaction(url)
+    .then(result => {
+      console.log(result)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
+
 
   onValueChange(value) {
     this.setState({
@@ -59,33 +93,63 @@ class Transaction extends Component {
   }
 
   handlePayNow = _ => {
-
+    const transactions = this.props.transactions
     const data = {
-      payment_type: "gopay",
+      payment_type: this.state.selectedBank,
       transaction_details: {
-          gross_amount: this.state.total,
-          order_id: this.state.orderId
+          gross_amount: this.props.transactions.total[0].total,
+          order_id: transactions.result[0].group_id
       },
       gopay: {
         enable_callback: true,
         callback_url: "someapps://callback"
       },
         customer_details: {
-            email: this.state.email,
-            first_name: this.state.firstName,
-            last_name: this.state.lastName
+            email: this.props.auth.user.email,
+            first_name: this.props.auth.user.email.split("@", 1)[0].replace(/[0-9]/g, '') || 'customer',
+            last_name: 'kebonid'
         },
-        item_details: this.state.itemDetails
+        item_details: transactions.result.map(t => (
+          {
+            id: t.id,
+            price: t.price,
+            quantity: t.amount,
+            name: t.product_name
+          })
+        )
     }
     const url = 'https://api.sandbox.midtrans.com/v2/charge'
     this.props.payment(url, data)
-    this.props.navigation.navigate('Invoice', {
-      data: {
-        courier: this.state.selected,
-        bank: this.state.selectedBank,
-      },
+    .then(result => {
+      console.log("resssssssssssssssssss: "+JSON.stringify(result))
+      this.props.navigation.navigate('Invoice', {
+        data: {
+          courier: this.state.selected,
+          bank: this.state.selectedBank,
+          },
+        })
+      }
+    )
+  }
+
+  renderIt() {
+    return this.props.transactions.result.map(transaction => {
+      return (
+        <View style={{marginTop: 10}} key={transaction.id}>
+        {/* <Image
+          source={require('../assets/bg.jpeg')}
+          style={style.img}
+          PlaceholderContent={<ActivityIndicator />}
+          /> */}
+          <H3>{transaction.product_name}</H3>
+          <Text style={style.textDesc}>Rp {transaction.price} / {transaction.product_name}</Text>
+          <Text style={style.textDesc}>Jumlah : {transaction.amount} pcs</Text>
+          <Text style={style.textDesc}>Sub Total : Rp {transaction.sub_total}</Text>
+        </View>
+      )
     })
   }
+
   render() {
     return (
       <>
@@ -100,7 +164,7 @@ class Transaction extends Component {
           </Body>
         </Header>
         <ScrollView>
-          <View style={style.container}>
+          {/* <View style={style.container}>
             <Text style={style.text1}>Alamat Pengiriman</Text>
             <Divider style={style.divider} />
             <View style={style.Desc}>
@@ -108,22 +172,17 @@ class Transaction extends Component {
               <Text style={style.textDesc}>0812345678</Text>
               <Text style={style.textDesc}>Tebet, Jakarta Selatan</Text>
             </View>
-          </View>
+          </View> */}
           <View style={style.container}>
             <Text style={style.text1}>Detail Pesanan</Text>
             <Divider style={style.divider} />
             <View style={style.Desc}>
               <View style={style.row}>
-                <Image
-                  source={require('../assets/bg.jpeg')}
-                  style={style.img}
-                  PlaceholderContent={<ActivityIndicator />}
-                />
                 <View>
-                  <Text style={style.textDesc}>Arkademy</Text>
-                  <Text style={style.textDesc}>Jagung</Text>
-                  <Text style={style.textDesc}>65000</Text>
-                  <Text style={style.textDesc}>3 pcs</Text>
+                  {console.log('transactionnnnnn' +JSON.stringify(this.props.transactions))}
+                  {this.renderIt()}
+                  <Divider style={style.divider} />
+                  <H3 style={{marginTop: 10}}>Total : Rp {this.props.transactions.total[0].total}</H3>
                 </View>
               </View>
             </View>
@@ -160,16 +219,16 @@ class Transaction extends Component {
             <View style={style.Desc}>
               <View style={style.row2}>
                 <Text style={style.textDesc1}>Total Harga :</Text>
-                <Text style={style.textDesc2}>128000</Text>
+                <Text style={style.textDesc2}>Rp {this.props.transactions.total[0].total}</Text>
               </View>
               <View style={style.row2}>
                 <Text style={style.textDesc1}>Ongkos Kirim :</Text>
-                <Text style={style.textDesc2}>10000</Text>
+                <Text style={style.textDesc2}>Rp 0</Text>
               </View>
               <Divider style={style.divider} />
               <View style={style.row3}>
                 <Text style={style.textDesc3}>Total Tagihan :</Text>
-                <Text style={style.textDesc4}>138000</Text>
+                <Text style={style.textDesc4}>Rp {this.props.transactions.total[0].total}</Text>
               </View>
               <Divider style={style.divider} />
               <Form>
@@ -181,16 +240,11 @@ class Transaction extends Component {
                   selectedValue={this.state.selectedBank}
                   onValueChange={this.onValueChangeBank.bind(this)}>
                   <Picker.Item label="Pilih Metode Pembayaran" value="key0" />
-                  <Picker.Item label="BCA 01234567" value="BCA 01234567" />
-                  <Picker.Item label="BNI 02441444" value="BNI 02441444" />
-                  <Picker.Item
-                    label="Mandiri 5875478"
-                    value="Mandiri 5875478"
-                  />
+                  <Picker.Item label="GO PAY" value="gopay" />
                 </Picker>
               </Form>
               <Text style={style.select}>
-                Bank pilihan kamu adalah :
+                Metode pembayaran :{' '}
                 {this.state.selectedBank ? (
                   this.state.selectedBank
                 ) : (
@@ -212,12 +266,20 @@ class Transaction extends Component {
   }
 }
 
+const mapStateToProps = state => {
+  return {
+    transactions: state.transaction,
+    auth: state.auth,
+  };
+};
+
 const mapDispatchToProps = dispatch => ({
   payment: (url, data) => dispatch(payment(url, data)),
+  getTransaction: (url) => dispatch(getTransaction(url))
 });
 
 export default withNavigation(
-  connect(null, mapDispatchToProps)(Transaction),
+  connect(mapStateToProps, mapDispatchToProps)(Transaction),
 );
 
 const style = StyleSheet.create({
