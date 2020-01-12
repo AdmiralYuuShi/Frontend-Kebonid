@@ -12,14 +12,16 @@ import {
 import Tab1 from '../components/ProfileUser';
 import Tab2 from '../components/ProfileStore';
 import Tab3 from '../components/AddStore';
+import GoToLogin from '../screens/GoToLogin';
+import {connect} from 'react-redux';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-export default class Profile extends Component {
+class Profile extends Component {
   render() {
     const id = this.props.navigation.getParam('id', {});
-    return (
+    return this.props.auth.token ? (
       <Container>
         <Header style={style.bgWhite}>
           <Body>
@@ -53,6 +55,8 @@ export default class Profile extends Component {
           </Tab>
         </Tabs>
       </Container>
+    ) : (
+      <GoToLogin />
     );
   }
 }
@@ -74,3 +78,9 @@ const style = StyleSheet.create({
     alignSelf: 'center',
   },
 });
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+});
+
+export default connect(mapStateToProps)(Profile);

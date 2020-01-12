@@ -185,11 +185,14 @@ class AddProduct extends PureComponent {
         <ScrollView style={styles.viewinfo}>
           <View>
             <Item stackedLabel style={styles.item}>
-              <Label>Nama Produk</Label>
-              <Input onChangeText={value => this.setState({name: value})} />
+              <Label style={styles.label}>Nama Produk</Label>
+              <Input
+                onChangeText={value => this.setState({name: value})}
+                style={styles.input}
+              />
             </Item>
             <Item stackedLabel style={styles.item}>
-              <Label>Deskripsi Produk</Label>
+              <Label style={styles.label}>Deskripsi Produk</Label>
               <Input
                 multiline={true}
                 numberOfLines={4}
@@ -198,7 +201,7 @@ class AddProduct extends PureComponent {
               />
             </Item>
             <Item stackedLabel style={styles.item}>
-              <Label>Harga</Label>
+              <Label style={styles.label}>Harga</Label>
               <TextInputMask
                 keyboardType="numeric"
                 type={'money'}
@@ -218,8 +221,9 @@ class AddProduct extends PureComponent {
               />
             </Item>
             <Item stackedLabel last style={styles.item}>
-              <Label>Stok</Label>
+              <Label style={styles.label}>Stok</Label>
               <Input
+                style={styles.input}
                 keyboardType="numeric"
                 onChangeText={value => this.setState({stock: value})}
               />
@@ -256,6 +260,7 @@ const styles = StyleSheet.create({
   },
   desc: {
     width: wp('80%'),
+    textAlign: 'left',
   },
   viewinfo: {
     marginLeft: wp('3%'),
@@ -264,6 +269,12 @@ const styles = StyleSheet.create({
   },
   item: {
     marginTop: hp('3%'),
+  },
+  input: {
+    textAlign: 'left',
+  },
+  label: {
+    alignSelf: 'flex-start',
   },
   viewimage: {
     height: hp('16%'),
