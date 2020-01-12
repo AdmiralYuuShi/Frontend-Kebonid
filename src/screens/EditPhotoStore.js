@@ -1,7 +1,7 @@
 import React from 'react';
-import EditPhoto from '../components/EditPhotoUser';
+import EditPhoto from '../components/EditPhotoStore';
 
-const EditPhotoUser = props => {
+const EditPhotoStore = props => {
   const photo = props.navigation.getParam('photo', {});
   return (
     <>
@@ -10,4 +10,4 @@ const EditPhotoUser = props => {
   );
 };
 
-export default EditPhotoUser;
+export default EditPhotoStore;

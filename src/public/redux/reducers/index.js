@@ -9,6 +9,7 @@ import payment from './payment';
 import wishlist from './wishlist';
 import wishlists from './wishlists';
 import cart from './cart';
+import store from './store';
 
 const rootReducer = combineReducers({
   products,
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   wishlist,
   wishlists,
   cart,
+  store,
 });
 
 export default rootReducer;

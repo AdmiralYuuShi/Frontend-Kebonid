@@ -21,12 +21,12 @@ const Start = props => {
         <View style={styles.button}>
           <Button
             style={styles.signin}
-            onPress={() => props.navigation.navigate('Login')}>
+            onPress={() => props.navigation.push('Login')}>
             <Text style={styles.textsignin}>Sign In</Text>
           </Button>
           <Button
             style={styles.signup}
-            onPress={() => props.navigation.navigate('Register')}>
+            onPress={() => props.navigation.push('Register')}>
             <Text style={styles.textsignup}>Sign Up</Text>
           </Button>
         </View>
