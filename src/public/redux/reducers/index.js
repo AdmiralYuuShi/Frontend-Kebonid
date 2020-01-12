@@ -6,6 +6,7 @@ import product from './product';
 import auth from './auth';
 import users from './users';
 import payment from './payment';
+import transaction from './transaction'
 
 const rootReducer = combineReducers({
   products,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   auth,
   users,
   payment,
+  transaction,
 });
 
 export default rootReducer;
