@@ -5,8 +5,10 @@ import Home from './Home';
 import Wishlist from './Wishlist';
 import Cart from './Cart';
 import Profile from './Profile';
+import GoToLogin from './GoToLogin';
+import {Text} from 'react-native';
 
-export default createMaterialBottomTabNavigator(
+const BottomNavbar = createMaterialBottomTabNavigator(
   {
     Home: {
       screen: Home,
@@ -68,3 +70,5 @@ export default createMaterialBottomTabNavigator(
     barStyle: {backgroundColor: '#fff'},
   },
 );
+
+export default BottomNavbar;

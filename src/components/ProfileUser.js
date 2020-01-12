@@ -75,9 +75,6 @@ class ProfileUser extends Component {
         });
       });
     }
-    if (!token) {
-      this.props.navigation.navigate('Login');
-    }
   }
   handleLogout = _ => {
     Alert.alert(
