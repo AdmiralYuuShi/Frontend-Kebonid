@@ -13,19 +13,20 @@ import {withNavigation} from 'react-navigation';
 import Tab1 from '../components/ProfileUser';
 import Tab2 from '../components/ProfileStore';
 import Tab3 from '../components/AddStore';
+import GoToLogin from '../screens/GoToLogin';
+import {connect} from 'react-redux';
+import {fetchDetailStore} from '../public/redux/actions/store';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {connect} from 'react-redux';
-import {fetchDetailStore} from '../public/redux/actions/store';
+
 class Profile extends Component {
   render() {
     const id = this.props.navigation.getParam('id', {});
     const isSeller = this.props.auth.user.isSeller;
     console.log(this.props.auth.user);
-
-    return (
+    return this.props.auth.token ? (
       <Container>
         <Header style={style.bgWhite}>
           <Body>
@@ -51,6 +52,8 @@ class Profile extends Component {
           </Tab>
         </Tabs>
       </Container>
+    ) : (
+      <GoToLogin />
     );
   }
 }
@@ -86,3 +89,9 @@ const style = StyleSheet.create({
     alignSelf: 'center',
   },
 });
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+});
+
+export default connect(mapStateToProps)(Profile);

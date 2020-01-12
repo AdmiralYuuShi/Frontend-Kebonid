@@ -27,8 +27,11 @@ import {ScrollView} from 'react-native-gesture-handler';
 import NumberFormat from 'react-number-format';
 import {connect} from 'react-redux';
 import {getProduct} from '../public/redux/actions/product';
-import {addWishlist, deleteWishlist} from '../public/redux/actions/wishlist';
-import {getAllWishlist} from '../public/redux/actions/wishlists';
+import {
+  addWishlist,
+  deleteWishlist,
+  getWishlists,
+} from '../public/redux/actions/wishlist';
 import {API_KEY_URL, API_KEY_PHOTO} from 'react-native-dotenv';
 
 class Product extends Component {
@@ -55,28 +58,33 @@ class Product extends Component {
     let url = `${API_KEY_URL}/wishlist`;
     let data = {customerId, productId};
 
-    await this.props
-      .addWishlist(url, data)
-      .then(() => {
-        Alert.alert(
-          'Success!',
-          'Berhasil Ditambahkan ke Wishlist Anda',
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                this.props.navigation.push('Product', {
-                  id_product: productId,
-                });
+    if (!this.props.auth.token) {
+      // eslint-disable-next-line no-alert
+      alert('Anda Belum Login... Silahkan Login Terlebih Dahulu');
+    } else {
+      await this.props
+        .addWishlist(url, data)
+        .then(() => {
+          Alert.alert(
+            'Success!',
+            'Berhasil Ditambahkan ke Wishlist Anda',
+            [
+              {
+                text: 'OK',
+                onPress: () => {
+                  this.props.navigation.push('Product', {
+                    id_product: productId,
+                  });
+                },
               },
-            },
-          ],
-          {cancelable: false},
-        );
-      })
-      .catch(err => {
-        Alert.alert(err);
-      });
+            ],
+            {cancelable: false},
+          );
+        })
+        .catch(err => {
+          Alert.alert(err);
+        });
+    }
   };
 
   componentDidMount() {
@@ -97,16 +105,18 @@ class Product extends Component {
       });
     });
 
-    this.props.getAll(`${API_KEY_URL}/wishlist`).then(() => {
-      this.setState({
-        checkWishlistP: this.props.wishlists.wishlists.findIndex(
-          w => w.product_id === id_product,
-        ),
-        checkWishlistC: this.props.wishlists.wishlists.findIndex(
-          w => w.customer_id === this.state.customerId,
-        ),
+    this.props
+      .getAll(`${API_KEY_URL}/wishlist/${this.state.customerId}`)
+      .then(() => {
+        this.setState({
+          checkWishlistP: this.props.wishlist.wishlist.findIndex(
+            w => w.product_id === id_product,
+          ),
+          checkWishlistC: this.props.wishlist.wishlist.findIndex(
+            w => w.customer_id === this.state.customerId,
+          ),
+        });
       });
-    });
   }
 
   onDelete = async () => {
@@ -138,6 +148,17 @@ class Product extends Component {
     //   .catch(err => {
     //     Alert.alert(err);
     //   });
+  };
+
+  addCart = () => {
+    if (!this.props.auth.token) {
+      // eslint-disable-next-line no-alert
+      alert('Anda Belum Login... Silahkan Login Terlebih Dahulu');
+    } else {
+      this.props.navigation.push('AddCart', {
+        id_product: this.state.productId,
+      });
+    }
   };
 
   render() {
@@ -246,13 +267,7 @@ class Product extends Component {
             <Button style={styles.buttonbeli}>
               <Text style={styles.textbeli}>Beli</Text>
             </Button>
-            <Button
-              style={styles.buttoncart}
-              onPress={() =>
-                this.props.navigation.push('AddCart', {
-                  id_product: this.state.productId,
-                })
-              }>
+            <Button style={styles.buttoncart} onPress={this.addCart.bind(this)}>
               <Text style={styles.textcart}>Tambah Ke Keranjang</Text>
             </Button>
           </View>
@@ -409,7 +424,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   get: url => dispatch(getProduct(url)),
-  getAll: url => dispatch(getAllWishlist(url)),
+  getAll: url => dispatch(getWishlists(url)),
   addWishlist: (url, data) => dispatch(addWishlist(url, data)),
   delete: url => dispatch(deleteWishlist(url)),
 });

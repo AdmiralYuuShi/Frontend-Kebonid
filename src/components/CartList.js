@@ -1,12 +1,5 @@
 import React, {Component} from 'react';
-import {
-  Text,
-  StyleSheet,
-  View,
-  Image,
-  TouchableOpacity,
-  ActivityIndicator,
-} from 'react-native';
+import {Text, StyleSheet, View, Image, TouchableOpacity} from 'react-native';
 import {Button} from 'native-base';
 import NumberFormat from 'react-number-format';
 import {
@@ -19,7 +12,7 @@ import {API_KEY_PHOTO} from 'react-native-dotenv';
 
 class CartList extends Component {
   render() {
-    const {item, navigation, onDelete, load} = this.props;
+    const {item, navigation, onDelete} = this.props;
     return (
       <>
         <View style={styles.view}>

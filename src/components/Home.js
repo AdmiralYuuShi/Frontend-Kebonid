@@ -18,7 +18,7 @@ import {Item, Input} from 'native-base';
 import Products from './Products';
 import {withNavigation} from 'react-navigation';
 import {connect} from 'react-redux';
-import { AndroidBackHandler } from 'react-navigation-backhandler';
+import {AndroidBackHandler} from 'react-navigation-backhandler';
 import {getProducts} from '../public/redux/actions/products';
 import {API_KEY_URL} from 'react-native-dotenv';
 
@@ -50,17 +50,16 @@ class Home extends Component {
         }`);
 
     await this.props.get(url);
-    
   };
 
   onBackButtonPressAndroid = () => {
     if (this.props.auth.token !== null) {
-        this.handleBackButton();
+      this.handleBackButton();
       return true;
     }
     return false;
   };
-  
+
   handleBackButton() {
     Alert.alert(
       'Exit App',
@@ -87,63 +86,72 @@ class Home extends Component {
     const {isClick} = this.state;
     return (
       <>
-      <AndroidBackHandler onBackPress={this.onBackButtonPressAndroid}>
-        <Header style={styles.header}>
-          <Body>
-            <Title style={styles.title}>Home</Title>
-          </Body>
-          <Right>
-            <TouchableOpacity
-              onPress={() =>
-                !isClick
-                  ? this.setState({isClick: 1})
-                  : this.setState({isClick: 0})
-              }>
-              <Icon name="search" size={wp('5.5%')} style={styles.righticon} />
-            </TouchableOpacity>
-          </Right>
-        </Header>
-        {isClick ? (
-          <View style={styles.viewsearch}>
-            <Item style={styles.item}>
-              <Icon active name="search" />
-              <Input
-                placeholder="Search Product ... "
-                onChangeText={text => {
-                  this.onSearch(text);
-                }}
-              />
-            </Item>
-          </View>
-        ) : (
-          <View />
-        )}
-        <SafeAreaView style={styles.list}>
-          <FlatList
-            data={this.props.products.products}
-            renderItem={({item}) => <Products item={item} />}
-            numColumns={2}
-            keyExtractor={item => item.id}
-          />
-        </SafeAreaView>
+        <AndroidBackHandler onBackPress={this.onBackButtonPressAndroid}>
+          <Header style={styles.header}>
+            <Body>
+              <Title style={styles.title}>Home</Title>
+            </Body>
+            <Right>
+              <TouchableOpacity
+                onPress={() =>
+                  !isClick
+                    ? this.setState({isClick: 1})
+                    : this.setState({isClick: 0})
+                }>
+                <Icon
+                  name="search"
+                  size={wp('5.5%')}
+                  style={styles.righticon}
+                />
+              </TouchableOpacity>
+            </Right>
+          </Header>
+          {isClick ? (
+            <View style={styles.viewsearch}>
+              <Item style={styles.item}>
+                <Icon active name="search" />
+                <Input
+                  placeholder="Search Product ... "
+                  onChangeText={text => {
+                    this.onSearch(text);
+                  }}
+                />
+              </Item>
+            </View>
+          ) : (
+            <View />
+          )}
+          <SafeAreaView style={styles.list}>
+            <FlatList
+              data={this.props.products.products}
+              renderItem={({item}) => <Products item={item} />}
+              numColumns={2}
+              keyExtractor={item => item.id}
+            />
+          </SafeAreaView>
 
-        <View style={styles.floating}>
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Sort')}>
-            <View style={styles.sort}>
-              <Icon active name="sort" size={20} style={styles.iconsort} />
-              <Text style={styles.textFilter}>Sort</Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Filter')}>
-            <View style={styles.filter}>
-              <Icon active name="filter" size={20} style={styles.iconfilter} />
-              <Text style={styles.textFilter}>Filter</Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      </AndroidBackHandler>
+          <View style={styles.floating}>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('Sort')}>
+              <View style={styles.sort}>
+                <Icon active name="sort" size={20} style={styles.iconsort} />
+                <Text style={styles.textFilter}>Sort</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('Filter')}>
+              <View style={styles.filter}>
+                <Icon
+                  active
+                  name="filter"
+                  size={20}
+                  style={styles.iconfilter}
+                />
+                <Text style={styles.textFilter}>Filter</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </AndroidBackHandler>
       </>
     );
   }

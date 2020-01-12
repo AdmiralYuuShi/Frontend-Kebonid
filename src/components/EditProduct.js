@@ -45,6 +45,7 @@ class EditProduct extends Component {
       stock: '',
       uri: '',
       filename: '',
+      filesize: 0,
     };
   }
 
@@ -63,6 +64,7 @@ class EditProduct extends Component {
           photo: source,
           uri: response.uri,
           filename: response.fileName,
+          filesize: response.fileSize,
         });
       }
     });
@@ -95,6 +97,7 @@ class EditProduct extends Component {
       photo,
       uri,
       filename,
+      filesize,
     } = this.state;
     let url = `${API_KEY_URL}/product/${id}`;
     let data = new FormData();
@@ -114,20 +117,25 @@ class EditProduct extends Component {
           },
     );
 
-    await this.props
-      .update(url, data)
-      .then(() => {
-        Alert.alert('Success!', 'Berhasil Ubah Produk', [
-          {
-            text: 'OK',
-            style: 'cancel',
-          },
-        ]);
-        this.props.navigation.push('ProductStore');
-      })
-      .catch(err => {
-        Alert.alert(err);
-      });
+    if (uri && filesize > 1 * 1024 * 1024) {
+      // eslint-disable-next-line no-alert
+      alert('File Too Large! Max 6 MB');
+    } else {
+      await this.props
+        .update(url, data)
+        .then(() => {
+          Alert.alert('Success!', 'Berhasil Ubah Produk', [
+            {
+              text: 'OK',
+              style: 'cancel',
+            },
+          ]);
+          this.props.navigation.push('ProductStore');
+        })
+        .catch(err => {
+          Alert.alert(err);
+        });
+    }
   };
 
   render() {
@@ -186,14 +194,15 @@ class EditProduct extends Component {
         <ScrollView style={styles.viewinfo}>
           <View>
             <Item stackedLabel style={styles.item}>
-              <Label>Nama Produk</Label>
+              <Label style={styles.label}>Nama Produk</Label>
               <Input
+                style={styles.input}
                 value={name}
                 onChangeText={value => this.setState({name: value})}
               />
             </Item>
             <Item stackedLabel style={styles.item}>
-              <Label>Deskripsi Produk</Label>
+              <Label style={styles.label}>Deskripsi Produk</Label>
               <Input
                 multiline={true}
                 numberOfLines={4}
@@ -203,7 +212,7 @@ class EditProduct extends Component {
               />
             </Item>
             <Item stackedLabel style={styles.item}>
-              <Label>Harga</Label>
+              <Label style={styles.label}>Harga</Label>
               <TextInputMask
                 keyboardType="numeric"
                 type={'money'}
@@ -226,8 +235,9 @@ class EditProduct extends Component {
               />
             </Item>
             <Item stackedLabel last style={styles.item}>
-              <Label>Stok</Label>
+              <Label style={styles.label}>Stok</Label>
               <Input
+                style={styles.input}
                 keyboardType="numeric"
                 value={stock.toString()}
                 onChangeText={value => this.setState({stock: value})}
@@ -320,6 +330,12 @@ const styles = StyleSheet.create({
   },
   changetext: {
     color: '#fff',
+  },
+  input: {
+    textAlign: 'left',
+  },
+  label: {
+    alignSelf: 'flex-start',
   },
 });
 
