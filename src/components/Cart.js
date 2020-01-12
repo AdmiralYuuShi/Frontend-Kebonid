@@ -20,6 +20,7 @@ import {withNavigation} from 'react-navigation';
 import NumberFormat from 'react-number-format';
 import {connect} from 'react-redux';
 import {getCart, deleteCart} from '../public/redux/actions/cart';
+import {createTransaction} from '../public/redux/actions/transaction';
 import {API_KEY_URL} from 'react-native-dotenv';
 
 class Cart extends Component {
@@ -35,7 +36,30 @@ class Cart extends Component {
     const id = this.props.auth.user.id;
     let url = `${API_KEY_URL}/cart/${id}`;
     await this.props.get(url);
+    console.log(this.props.cart.cart)
   };
+
+  handlePay = _ => {
+    const url = `${API_KEY_URL}/transaction/`;
+    let data = [];
+    this.props.cart.cart.map(cart => {
+      data.push({
+        customerId: cart.customer_id, 
+        productId: cart.product_id, 
+        productName: cart.product_name, 
+        amount: cart.amount, 
+        price: cart.price, 
+        status: 'on process'
+      })
+    })
+    this.props.createTransaction(url, data)
+    .then(res => {
+      this.props.navigation.navigate('Transaction')
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }
 
   apiCall = async () => {
     this.setState({load: true});
@@ -142,7 +166,8 @@ class Cart extends Component {
             <View>
               <Button
                 style={styles.buttonbeli}
-                onPress={() => this.props.navigation.navigate('Transaction')}>
+                // onPress={() => this.props.navigation.navigate('Transaction')}>
+                onPress={this.handlePay}>
                 <Text style={styles.textbeli}>Bayar</Text>
               </Button>
             </View>
@@ -231,6 +256,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   get: url => dispatch(getCart(url)),
   delete: url => dispatch(deleteCart(url)),
+  createTransaction: (url, data) => dispatch(createTransaction(url, data)),
 });
 
 export default withNavigation(

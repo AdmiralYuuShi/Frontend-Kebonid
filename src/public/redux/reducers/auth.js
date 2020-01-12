@@ -72,10 +72,6 @@ const auth = (state = initialState, action) => {
         message: null,
         detail: null,
         token: null,
-      };
-    default:
-      return state;
-  }
         data: action.payload.data,
       };
       case 'RESET_PENDING':

@@ -6,6 +6,7 @@ const initialState = {
   isLoadingUpdate: false,
   isFulfilled: false,
   isRejected: false,
+  orderId: ''
 };
 
 const transaction = (state = initialState, action) => {
@@ -34,7 +35,28 @@ const transaction = (state = initialState, action) => {
         isFulfilled: true,
         isRejected: false,
       };
-
+      case 'CREATE_TRANSACTION_PENDING':
+        return {
+          ...state,
+          isLoading: true,
+          isRejected: false,
+          isFulfilled: false,
+        };
+      case 'CREATE_TRANSACTION_REJECTED':
+        return {
+          ...state,
+          isLoading: false,
+          isRejected: true,
+        };
+      case 'CREATE_TRANSACTION_FULFILLED':
+        return {
+          ...state,
+          // transactions: action.payload.data,
+          orderId: action.payload.data.idGroup,
+          isLoading: false,
+          isFulfilled: true,
+          isRejected: false,
+        };
     default:
       return state;
   }
