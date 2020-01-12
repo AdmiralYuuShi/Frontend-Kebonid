@@ -8,11 +8,56 @@ import {
 } from 'react-native-responsive-screen';
 import {withNavigation} from 'react-navigation';
 import React, {Component, Fragment} from 'react';
-import {TextInput, Text, Image, StyleSheet, View} from 'react-native';
+import {TextInput, Text, Image, StyleSheet, View, Alert} from 'react-native';
+import {API_KEY_URL} from 'react-native-dotenv';
+import {connect} from 'react-redux';
+import {forgot} from '../public/redux/actions/auth';
 
 class RequestForgotPassword extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      email: ''
+    }
+  }
+
+  sendEmail = values =>{
+    this.props.forgot(API_KEY_URL + '/auth/forgot', {email: values.email})
+    .then(result => {
+      console.log(result);
+      Alert.alert(
+        'Kode OTP dikirim',
+        'Cek email mu untuk melihat kode OTP',
+        [
+          {
+            text: 'OK',
+            onPress: () => console.log('Ok Pressed'),
+            style: 'cancel',
+          },
+        ],
+        {
+          cancelable: false,
+        },
+      );
+      this.props.navigation.navigate('ResetPassword');
+    })
+    .catch(err => {
+      console.log(err);
+      Alert.alert(
+        'Opps!',
+        this.props.auth.data.data.message === "Email not found" ? "Harap masukkan email yang terdaftar" : "Something happens" ,
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+        ],
+        {
+          cancelable: false,
+        },
+      );
+    });
   }
   render() {
     return (
@@ -63,9 +108,7 @@ class RequestForgotPassword extends Component {
                     full
                     title="Submit"
                     disabled={!isValid}
-                    onPress={() =>
-                      this.props.navigation.navigate('ResetPassword')
-                    }
+                    onPress={handleSubmit}
                     style={style.submit}>
                     <Text style={style.submitText}>Submit</Text>
                   </Button>
@@ -85,7 +128,18 @@ class RequestForgotPassword extends Component {
     );
   }
 }
-export default withNavigation(RequestForgotPassword);
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+});
+
+const mapDispatchToProps = dispatch => ({
+  forgot: (url, data) => dispatch(forgot(url, data)),
+});
+
+export default withNavigation(
+  connect(mapStateToProps, mapDispatchToProps)(RequestForgotPassword),
+);
 
 const style = StyleSheet.create({
   container: {

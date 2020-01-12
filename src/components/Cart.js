@@ -143,7 +143,7 @@ class Cart extends Component {
               <Button
                 style={styles.buttonbeli}
                 onPress={() => this.props.navigation.navigate('Transaction')}>
-                <Text style={styles.textbeli}>Beli</Text>
+                <Text style={styles.textbeli}>Bayar</Text>
               </Button>
             </View>
           </View>

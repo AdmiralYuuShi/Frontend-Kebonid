@@ -11,3 +11,13 @@ export const signUp = (url, data) => ({
 export const logout = _ => ({
   type: 'LOGOUT',
 });
+
+export const forgot = (url, data) => ({
+  type: 'FORGOT',
+  payload: axios.post(url, data),
+})
+
+export const reset = (url, data) => ({
+  type: 'RESET',
+  payload: axios.post(url, data),
+})

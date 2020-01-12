@@ -1,17 +1,29 @@
 import * as Yup from 'yup';
 import {Formik} from 'formik';
 // import RNSecureStorage, { ACCESSIBLE } from 'rn-secure-storage'
-import { signUp } from '../public/redux/actions/auth'
-import { connect } from 'react-redux'
+import {signUp} from '../public/redux/actions/auth';
+import {connect} from 'react-redux';
 import {Button, Container, Label} from 'native-base';
 import {TouchableOpacity, ScrollView} from 'react-native-gesture-handler';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {StackActions, NavigationActions, withNavigation} from 'react-navigation';
+import {
+  StackActions,
+  NavigationActions,
+  withNavigation,
+} from 'react-navigation';
 import React, {Component, Fragment} from 'react';
-import {TextInput, Text, Image, StyleSheet, View, Item, Alert} from 'react-native';
+import {
+  TextInput,
+  Text,
+  Image,
+  StyleSheet,
+  View,
+  Item,
+  Alert,
+} from 'react-native';
 import {CheckBox} from 'react-native-elements';
 import {API_KEY_URL} from 'react-native-dotenv';
 import PasswordInputText from 'react-native-hide-show-password-input';
@@ -25,14 +37,15 @@ class SignUp extends Component {
       message: '',
     };
   }
-  getSignUp(values){
+  getSignUp(values) {
     const data = {
       email: values.email,
       password: values.password,
-      name: values.email.split('@')[0]
+      name: values.email.split('@')[0],
     };
-       this.props.signUp(API_KEY_URL+'/auth/register', data)
-       .then(result => {
+    this.props
+      .signUp(API_KEY_URL + '/auth/register', data)
+      .then(result => {
         this.setState({
           showAlert: true,
           color: '#42B549',
@@ -47,7 +60,7 @@ class SignUp extends Component {
           message: this.props.auth.message,
         });
       });
-  };
+  }
 
   hideAlert = () => {
     this.setState({
@@ -164,7 +177,9 @@ class SignUp extends Component {
                     onPress={() => {
                       const resetAction = StackActions.reset({
                         index: 0,
-                        actions: [NavigationActions.navigate({routeName: 'Login'})],
+                        actions: [
+                          NavigationActions.navigate({routeName: 'Login'}),
+                        ],
                       });
                       this.props.navigation.dispatch(resetAction);
                     }}
@@ -187,14 +202,14 @@ class SignUp extends Component {
               onConfirmPressed={() => {
                 this.hideAlert();
                 this.state.message === 'Successfully Register New User'
-                  ? 
-                    this.props.navigation.dispatch(
+                  ? this.props.navigation.dispatch(
                       StackActions.reset({
                         index: 0,
-                        actions: [NavigationActions.navigate({routeName: 'Login'})],
-                      })
+                        actions: [
+                          NavigationActions.navigate({routeName: 'Login'}),
+                        ],
+                      }),
                     )
-                  
                   : this.forceUpdate();
               }}
             />
@@ -211,9 +226,9 @@ const mapDispatchToProps = dispatch => ({
   signUp: (url, data) => dispatch(signUp(url, data)),
 });
 
-export default withNavigation(connect(
-  mapStateToProps, mapDispatchToProps
-)(SignUp));
+export default withNavigation(
+  connect(mapStateToProps, mapDispatchToProps)(SignUp),
+);
 
 const style = StyleSheet.create({
   SignUp: {

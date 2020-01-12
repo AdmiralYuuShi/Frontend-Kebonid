@@ -21,8 +21,10 @@ import {Rating} from 'react-native-elements';
 import {logout} from '../public/redux/actions/auth';
 import {fetchDetailUsers} from '../public/redux/actions/users';
 import {connect} from 'react-redux';
-import jwtDecode from 'jwt-decode';
+import {Bubbles} from 'react-native-loader';
+
 import {API_KEY_PHOTO} from 'react-native-dotenv';
+import jwtDecode from 'jwt-decode';
 class ProfileUser extends Component {
   constructor(props) {
     super(props);
@@ -37,16 +39,19 @@ class ProfileUser extends Component {
   }
   componentDidMount() {
     const token = this.props.auth.token;
+    const decoded = jwtDecode(token);
+    console.log(this.props.auth.detail);
+
     if (this.props.auth.user.id) {
       this.props.get(this.props.auth.user.id).then(() => {
-        // console.log(this.props.users.users.result);
+        // console.log(this.props.users.users.result); 
         this.props.users.users.result.map(item => {
           return this.setState({
             name: item.name,
             id: item.id,
             phone: item.phone,
             photo: item.photo
-              ? `${API_KEY_PHOTO}/customer/${item.photo}`
+              ? `${API_KEY_PHOTO}/customers/${item.photo}`
               : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAQeOYC_Uqrxp5lVzs-DalVZJg3t6cCtAFyMHeI2NejPr1-TsUUQ&s',
             address: item.address,
           });
@@ -62,8 +67,9 @@ class ProfileUser extends Component {
             id: item.id,
             phone: item.phone,
             photo: item.photo
-              ? `${API_KEY_PHOTO}/customer/${item.photo}`
+              ? `${API_KEY_PHOTO}/customers/${item.photo}`
               : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRAQeOYC_Uqrxp5lVzs-DalVZJg3t6cCtAFyMHeI2NejPr1-TsUUQ&s',
+
             address: item.address,
           });
         });
@@ -71,7 +77,6 @@ class ProfileUser extends Component {
     }
   }
   handleLogout = _ => {
-    this.props.logoutUser();
     Alert.alert(
       'Kamu yakin keluar?',
       'Jangan lupa balik yah',
@@ -87,7 +92,10 @@ class ProfileUser extends Component {
             Alert.alert('Success!', 'See you', [
               {
                 text: 'OK',
-                onPress: () => this.props.navigation.push('Start'),
+                onPress: () => {
+                  this.props.logoutUser() &&
+                    this.props.navigation.push('Start');
+                },
               },
             ]),
         },
@@ -97,78 +105,93 @@ class ProfileUser extends Component {
   };
 
   render() {
+    const {isLoading} = this.state;
+    setTimeout(
+      function() {
+        this.setState({isLoading: true});
+      }.bind(this),
+      2000,
+    );
     return (
       <>
-        <ScrollView>
-          <View style={style.container}>
-            <View style={style.containerImage}>
-              <TouchableOpacity
-                onPress={() => {
-                  this.props.navigation.push('EditPhotoUser');
-                }}>
-                <Avatar
-                  size="xlarge"
-                  source={{uri: this.state.photo}}
-                  showEditButton
-                  activeOpacity={0.7}
-                  title="PROFIL"
-                />
-              </TouchableOpacity>
+        {!isLoading ? (
+          <View style={style.loader}>
+            <Bubbles size={10} style={style.loading} color="green" />
+          </View>
+        ) : (
+          <ScrollView>
+            <View style={style.container}>
+              <View style={style.containerImage}>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate('EditPhotoUser', {
+                      photo: this.state.photo,
+                    });
+                  }}>
+                  <Avatar
+                    size="xlarge"
+                    source={{uri: this.state.photo}}
+                    showEditButton
+                    activeOpacity={0.7}
+                    title="PROFIL"
+                  />
+                </TouchableOpacity>
+              </View>
+              <View>
+                <Text style={style.textProfil}>{this.state.name}</Text>
+                <Text style={style.textProfil1}>{this.state.phone}</Text>
+                <Text style={style.textProfil1}>{this.state.address}</Text>
+              </View>
+              <View>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.push('EditUser', {
+                      data: this.state,
+                    });
+                  }}>
+                  <Button style={style.button}>
+                    <Text style={style.textButton}>Edit</Text>
+                  </Button>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={style.card}>
+              <View style={style.status}>
+                <Icon name="podium-silver" size={30} color="green" />
+                <Text style={style.textStatus}>Status</Text>
+                <Text style={style.textStatus2}>Silver</Text>
+              </View>
+              <View style={style.status}>
+                <Icon1 name="dollar" size={30} color="green" />
+                <Text style={style.textStatus}>Saldo</Text>
+                <Text style={style.textStatus2}>0</Text>
+              </View>
+              <View style={style.status}>
+                <Icon2 name="shopping-sale" size={30} color="green" />
+                <Text style={style.textStatus}>Kupon</Text>
+                <Text style={style.textStatus2}>0</Text>
+              </View>
+            </View>
+            <View style={style.ratingWrapper}>
+              <Text style={style.rating}>Berikan kami rating</Text>
+              <Rating
+                onFinishRating={this.ratingCompleted}
+                minValue={0}
+                startingValue={0}
+                style={{paddingVertical: 10}}
+              />
             </View>
             <View>
-              <Text style={style.textProfil}>{this.state.name}</Text>
-              <Text style={style.textProfil1}>{this.state.phone}</Text>
-              <Text style={style.textProfil1}>{this.state.address}</Text>
-            </View>
-            <View>
-              <TouchableOpacity
-                onPress={() => {
-                  this.props.navigation.push('EditUser', {
-                    data: this.state,
-                  });
-                }}>
-                <Button style={style.button}>
-                  <Text style={style.textButton}>Edit</Text>
-                </Button>
+              <ListItem title="Pesan bantuan" bottomDivider chevron />
+              <ListItem title="Komplain pesanan" bottomDivider chevron />
+              <ListItem title="FAQ" bottomDivider chevron />
+              <ListItem title="Tentang aplikasi" bottomDivider chevron />
+              <TouchableOpacity onPress={this.handleLogout}>
+                <ListItem title="Keluar" bottomDivider chevron />
               </TouchableOpacity>
             </View>
-          </View>
-          <View style={style.card}>
-            <View style={style.status}>
-              <Icon name="podium-silver" size={30} color="green" />
-              <Text style={style.textStatus}>Status</Text>
-              <Text style={style.textStatus2}>Silver</Text>
-            </View>
-            <View style={style.status}>
-              <Icon1 name="dollar" size={30} color="green" />
-              <Text style={style.textStatus}>Saldo</Text>
-              <Text style={style.textStatus2}>0</Text>
-            </View>
-            <View style={style.status}>
-              <Icon2 name="shopping-sale" size={30} color="green" />
-              <Text style={style.textStatus}>Kupon</Text>
-              <Text style={style.textStatus2}>0</Text>
-            </View>
-          </View>
-          <View style={style.ratingWrapper}>
-            <Text style={style.rating}>Berikan kami rating</Text>
-            <Rating
-              onFinishRating={this.ratingCompleted}
-              minValue={0}
-              startingValue={0}
-              style={{paddingVertical: 10}}
-            />
-          </View>
-          <View>
-            <ListItem title="Pesan bantuan" bottomDivider chevron />
-            <ListItem title="Komplain pesanan" bottomDivider chevron />
-            <ListItem title="FAQ" bottomDivider chevron />
-            <ListItem title="Tentang aplikasi" bottomDivider chevron />
-            <TouchableOpacity onPress={this.handleLogout}>
-              <ListItem title="Keluar" bottomDivider chevron />
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
+          </ScrollView>
+        )}
       </>
     );
   }
@@ -227,6 +250,12 @@ const style = StyleSheet.create({
     marginTop: hp('2%'),
     marginBottom: hp('2%'),
   },
+  loader: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: hp('30%'),
+  },
+  loading: {marginTop: hp('50%')},
 });
 const mapStateToProps = state => {
   return {
