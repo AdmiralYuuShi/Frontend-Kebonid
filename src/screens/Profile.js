@@ -71,6 +71,7 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps,
 )(withNavigation(Profile));
+
 const style = StyleSheet.create({
   bgWhite: {
     backgroundColor: 'white',
@@ -89,9 +90,3 @@ const style = StyleSheet.create({
     alignSelf: 'center',
   },
 });
-
-const mapStateToProps = state => ({
-  auth: state.auth,
-});
-
-export default connect(mapStateToProps)(Profile);

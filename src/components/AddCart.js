@@ -17,7 +17,7 @@ import {
 import {withNavigation} from 'react-navigation';
 import NumberFormat from 'react-number-format';
 import {connect} from 'react-redux';
-import {getCart, addCart} from '../public/redux/actions/cart';
+import {getCart, addCart, updateAmount} from '../public/redux/actions/cart';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {API_KEY_URL, API_KEY_PHOTO} from 'react-native-dotenv';
 
@@ -33,6 +33,9 @@ class AddCart extends Component {
       amount: 1,
       price: 0,
       stock: '',
+      checkCartP: '',
+      checkCartC: '',
+      am: [],
     };
   }
 
@@ -49,6 +52,35 @@ class AddCart extends Component {
           stock: p.stock,
         });
       });
+    });
+
+    this.props.get(`${API_KEY_URL}/cart/${this.state.customerId}`).then(() => {
+      this.setState({
+        checkCartP: this.props.cart.cart.findIndex(
+          c => c.product_id === id_product,
+        ),
+        checkCartC: this.props.cart.cart.findIndex(
+          c => c.customer_id === this.state.customerId,
+        ),
+        am: this.props.cart.cart,
+      });
+
+      if (
+        this.props.cart.cart.findIndex(c => c.product_id === id_product) !== -1
+      ) {
+        this.setState({
+          amount: Number.parseInt(
+            JSON.stringify(
+              this.state.am[
+                this.props.cart.cart.findIndex(c => c.product_id === id_product)
+              ],
+            )
+              .split(',')[4]
+              .split(':')[1],
+            10,
+          ),
+        });
+      }
     });
   }
 
@@ -68,42 +100,86 @@ class AddCart extends Component {
     const {customerId, productId, productName, amount, price} = this.state;
     let url = `${API_KEY_URL}/cart`;
     let data = {customerId, productId, productName, amount, price};
-    await this.props
-      .addCart(url, data)
-      .then(() => {
-        Alert.alert(
-          'Success!',
-          'Berhasil Ditambahkan ke Keranjang Anda',
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                this.props.navigation.push('Product', {
-                  id_product: productId,
-                });
+    // alert(this.state.checkCartP)
+    if (this.state.checkCartP !== -1) {
+      const id = this.state.am.find(
+        x => x.product_id === productId && x.customer_id === customerId,
+      ).id;
+      let url1 = `${API_KEY_URL}/cart/${id}`;
+      await this.props
+        .updateAmount(url1, {amount})
+        .then(() => {
+          Alert.alert(
+            'Success!',
+            'Berhasil Mengubah Jumlah Barang',
+            [
+              {
+                text: 'OK',
+                onPress: () => {
+                  this.props.navigation.push('Product', {
+                    id_product: productId,
+                  });
+                },
               },
-            },
-          ],
-          {cancelable: false},
-        );
-      })
-      .catch(() => {
-        Alert.alert(
-          'Success!',
-          'Berhasil Ditambahkan ke Keranjang Anda',
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                this.props.navigation.push('Product', {
-                  id_product: productId,
-                });
+            ],
+            {cancelable: false},
+          );
+        })
+        .catch(() => {
+          Alert.alert(
+            'Err!',
+            'Berhasil Ditambahkan ke Keranjang Anda',
+            [
+              {
+                text: 'OK',
+                onPress: () => {
+                  this.props.navigation.push('Product', {
+                    id_product: productId,
+                  });
+                },
               },
-            },
-          ],
-          {cancelable: false},
-        );
-      });
+            ],
+            {cancelable: false},
+          );
+        });
+    } else {
+      await this.props
+        .addCart(url, data)
+        .then(() => {
+          Alert.alert(
+            'Success!',
+            'Berhasil Ditambahkan ke Keranjang Anda',
+            [
+              {
+                text: 'OK',
+                onPress: () => {
+                  this.props.navigation.push('Product', {
+                    id_product: productId,
+                  });
+                },
+              },
+            ],
+            {cancelable: false},
+          );
+        })
+        .catch(() => {
+          Alert.alert(
+            'Success!',
+            'Berhasil Ditambahkan ke Keranjang Anda',
+            [
+              {
+                text: 'OK',
+                onPress: () => {
+                  this.props.navigation.push('Product', {
+                    id_product: productId,
+                  });
+                },
+              },
+            ],
+            {cancelable: false},
+          );
+        });
+    }
   };
 
   render() {
@@ -400,6 +476,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   get: url => dispatch(getCart(url)),
   addCart: (url, data) => dispatch(addCart(url, data)),
+  updateAmount: (url, data) => dispatch(updateAmount(url, data)),
 });
 
 export default withNavigation(

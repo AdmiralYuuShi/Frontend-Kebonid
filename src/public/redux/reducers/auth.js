@@ -57,7 +57,7 @@ const auth = (state = initialState, action) => {
         isFulfilled: false,
       };
     case 'FORGOT_REJECTED':
-    return {
+      return {
         ...state,
         isLoading: false,
         isRejected: true,
@@ -76,7 +76,7 @@ const auth = (state = initialState, action) => {
         user: [],
         data: action.payload.data,
       };
-      
+
     case 'RESET_PENDING':
       return {
         ...state,
@@ -85,7 +85,7 @@ const auth = (state = initialState, action) => {
         isFulfilled: false,
       };
     case 'RESET_REJECTED':
-    return {
+      return {
         ...state,
         isLoading: false,
         isRejected: true,
@@ -111,10 +111,10 @@ const auth = (state = initialState, action) => {
         token: null,
         user: [],
       };
-      
+
     default:
       return state;
-    }
+  }
 };
 
 export default auth;

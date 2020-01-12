@@ -29,7 +29,7 @@ class ProductStore extends Component {
   }
 
   componentDidMount = async () => {
-    let url = `${API_KEY_URL}/product?search=1&sortBy=date_updated`;
+    let url = `${API_KEY_URL}/product?search=${this.props.auth.user.id}&sortBy=date_updated`;
     await this.props.get(url);
   };
 
@@ -148,6 +148,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     products: state.products,
+    auth: state.auth,
   };
 };
 const mapDispatchToProps = dispatch => ({

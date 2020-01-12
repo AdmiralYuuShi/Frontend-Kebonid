@@ -56,7 +56,7 @@ class AddProduct extends PureComponent {
       .join('');
     let url = `${API_KEY_URL}/product`;
     let data = new FormData();
-    data.append('sellerId', '1');
+    data.append('sellerId', this.props.auth.user.id);
     data.append('name', name);
     data.append('description', description);
     data.append('stock', stock);
@@ -315,6 +315,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     products: state.products,
+    auth: state.auth,
   };
 };
 

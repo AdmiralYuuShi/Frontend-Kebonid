@@ -14,6 +14,15 @@ export const addCart = (url, data) => ({
   }),
 });
 
+export const updateAmount = (url, data) => ({
+  type: 'AMOUNT',
+  payload: axios.put(url, data, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }),
+});
+
 export const deleteCart = url => ({
   type: 'DELETE_CART',
   payload: axios.delete(url),
