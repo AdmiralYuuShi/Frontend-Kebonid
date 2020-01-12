@@ -31,6 +31,7 @@ import Invoice from './src/screens/Invoice';
 import EditStore from './src/screens/EditStore';
 import EditPhotoStore from './src/screens/EditPhotoStore';
 import GoToLogin from './src/screens/GoToLogin';
+import AddCart from './src/screens/AddCart';
 const AppNavigator = createStackNavigator(
   {
     Splash: {
@@ -107,6 +108,9 @@ const AppNavigator = createStackNavigator(
     },
     GoToLogin: {
       screen: GoToLogin,
+    },
+    AddCart: {
+      screen: AddCart,
     },
   },
   {

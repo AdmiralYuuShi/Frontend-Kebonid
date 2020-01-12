@@ -246,7 +246,13 @@ class Product extends Component {
             <Button style={styles.buttonbeli}>
               <Text style={styles.textbeli}>Beli</Text>
             </Button>
-            <Button style={styles.buttoncart}>
+            <Button
+              style={styles.buttoncart}
+              onPress={() =>
+                this.props.navigation.push('AddCart', {
+                  id_product: this.state.productId,
+                })
+              }>
               <Text style={styles.textcart}>Tambah Ke Keranjang</Text>
             </Button>
           </View>
