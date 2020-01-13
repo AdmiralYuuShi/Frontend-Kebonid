@@ -57,9 +57,7 @@ class EditUser extends Component {
                 {
                   text: 'OK',
                   onPress: () =>
-                    this.props.navigation.push('Profile', {
-                      id: id,
-                    }),
+                    this.props.navigation.push('BottomNavbar'),
                 },
               ]),
           },
