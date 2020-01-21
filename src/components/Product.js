@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
-import {StyleSheet, TouchableOpacity, Image, View, Text} from 'react-native';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  View,
+  Text,
+  Alert,
+} from 'react-native';
 import {
   Header,
   Body,
@@ -10,6 +17,7 @@ import {
   Thumbnail,
 } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Icon1 from 'react-native-vector-icons/FontAwesome';
 import {withNavigation, SafeAreaView} from 'react-navigation';
 import {
   widthPercentageToDP as wp,
@@ -17,19 +25,160 @@ import {
 } from 'react-native-responsive-screen';
 import {ScrollView} from 'react-native-gesture-handler';
 import NumberFormat from 'react-number-format';
+import {connect} from 'react-redux';
+import {getProduct} from '../public/redux/actions/product';
+import {
+  addWishlist,
+  deleteWishlist,
+  getWishlists,
+} from '../public/redux/actions/wishlist';
+import {API_KEY_URL, API_KEY_PHOTO} from 'react-native-dotenv';
 
 class Product extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      customerId: this.props.auth.user.id,
+      productId: '',
+      product_name: '',
+      product_photo: null,
+      price: 0,
+      stock: 0,
+      description: '',
+      sellers_name: '',
+      sellers_photo: null,
+      allWishlist: [],
+      checkWishlistC: '',
+      checkWishlistP: '',
+    };
   }
 
+  onWhislist = async () => {
+    const {customerId, productId} = this.state;
+    let url = `${API_KEY_URL}/wishlist`;
+    let data = {customerId, productId};
+
+    if (!this.props.auth.token) {
+      // eslint-disable-next-line no-alert
+      alert('Anda Belum Login... Silahkan Login Terlebih Dahulu');
+    } else {
+      await this.props
+        .addWishlist(url, data)
+        .then(() => {
+          Alert.alert(
+            'Success!',
+            'Berhasil Ditambahkan ke Wishlist Anda',
+            [
+              {
+                text: 'OK',
+                onPress: () => {
+                  this.props.navigation.push('Product', {
+                    id_product: productId,
+                  });
+                },
+              },
+            ],
+            {cancelable: false},
+          );
+        })
+        .catch(err => {
+          Alert.alert(err);
+        });
+    }
+  };
+
+  componentDidMount() {
+    const id_product = this.props.navigation.getParam('id_product', '');
+    let url = `${API_KEY_URL}/product/${id_product}`;
+    this.props.get(url).then(() => {
+      this.props.product.product.map(p => {
+        return this.setState({
+          productId: p.id,
+          product_name: p.product_name,
+          product_photo: p.product_photo,
+          price: p.price,
+          stock: p.stock,
+          description: p.description,
+          sellers_name: p.sellers_name,
+          sellers_photo: p.sellers_photo,
+        });
+      });
+    });
+
+    this.props
+      .getAll(`${API_KEY_URL}/wishlist/${this.state.customerId}`)
+      .then(() => {
+        this.setState({
+          checkWishlistP: this.props.wishlist.wishlist.findIndex(
+            w => w.product_id === id_product,
+          ),
+          checkWishlistC: this.props.wishlist.wishlist.findIndex(
+            w => w.customer_id === this.state.customerId,
+          ),
+        });
+      });
+  }
+
+  onDelete = async () => {
+    // const id = this.state.allWishlist.find(
+    //   x =>
+    //     x.product_id === this.state.productId &&
+    //     x.customer_id === this.state.customerId,
+    // ).id;
+    // let url = `${API_KEY_URL}/wishlist/${id}`;
+    // await this.props
+    //   .delete(url)
+    //   .then(() => {
+    //     Alert.alert(
+    //       'Success!',
+    //       'Berhasil Hapus Produk dari Wishlist Anda',
+    //       [
+    //         {
+    //           text: 'OK',
+    //           onPress: () => {
+    //             this.props.navigation.push('Product', {
+    //               id_product: this.state.productId,
+    //             });
+    //           },
+    //         },
+    //       ],
+    //       {cancelable: false},
+    //     );
+    //   })
+    //   .catch(err => {
+    //     Alert.alert(err);
+    //   });
+  };
+
+  addCart = () => {
+    if (!this.props.auth.token) {
+      // eslint-disable-next-line no-alert
+      alert('Anda Belum Login... Silahkan Login Terlebih Dahulu');
+    } else {
+      this.props.navigation.push('AddCart', {
+        id_product: this.state.productId,
+      });
+    }
+  };
+
   render() {
-    const product = this.props.navigation.getParam('product', {});
+    const {
+      product_name,
+      product_photo,
+      price,
+      stock,
+      description,
+      sellers_name,
+      sellers_photo,
+      checkWishlistP,
+      checkWishlistC,
+    } = this.state;
     return (
       <>
         <Header style={styles.header}>
           <Left>
-            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('BottomNavbar')}>
               <Icon style={styles.icon} name="angle-left" size={wp('5.5%')} />
             </TouchableOpacity>
           </Left>
@@ -41,21 +190,36 @@ class Product extends Component {
           <ScrollView style={{marginBottom: hp('8%')}}>
             <Image
               style={styles.image}
-              source={{
-                uri:
-                  'https://www.amwaytoday.co.id/kesehatan/info-produk/Bigger-is-Better.img.png/1567420073429.png',
-              }}
+              source={
+                !product_photo
+                  ? {
+                      uri:
+                        'https://haes.ca/wp-content/plugins/everest-timeline/images/no-image-available.png',
+                    }
+                  : {
+                      uri: `${API_KEY_PHOTO}/product/${product_photo}`,
+                    }
+              }
             />
             <View style={styles.floating}>
-              <Icon name="heart" size={wp('10%')} color={'#979A9A'} />
+              {(checkWishlistP === -1 || checkWishlistC === -1) && (
+                <TouchableOpacity onPress={this.onWhislist.bind(this)}>
+                  <Icon1 name="heart" size={wp('10%')} color={'#979A9A'} />
+                </TouchableOpacity>
+              )}
+              {checkWishlistP !== -1 && checkWishlistC !== -1 && (
+                <TouchableOpacity>
+                  <Icon1 name="heart" size={wp('10%')} color={'#03AC0E'} />
+                </TouchableOpacity>
+              )}
             </View>
 
             <Text style={styles.textname} numberOfLines={2}>
-              {product.name}
+              {product_name}
             </Text>
             <View style={styles.viewstok}>
               <NumberFormat
-                value={product.code}
+                value={price}
                 displayType={'text'}
                 thousandSeparator={true}
                 prefix={'Rp. '}
@@ -63,16 +227,12 @@ class Product extends Component {
                   <Text style={styles.textprice}>{value}</Text>
                 )}
               />
-              <Text style={styles.stok}>Stok: 500</Text>
+              <Text style={styles.stok}>Stok: {stock}</Text>
             </View>
             <View style={styles.saparator} />
             <View>
               <Text style={styles.desc}>Deskripsi Produk</Text>
-              <Text style={styles.desctext}>
-                Jaket X Multifungsi terbuat dari bahan taslan yang tahan air dan
-                tidak mudah ditembus angin. Cocok bagi Anda yang banyak
-                beraktivitas di luar ruangan atau pengendara motor.
-              </Text>
+              <Text style={styles.desctext}>{description}</Text>
             </View>
             <View style={styles.saparator} />
             <View>
@@ -81,14 +241,20 @@ class Product extends Component {
                 <Left>
                   <Thumbnail
                     square
-                    source={{
-                      uri:
-                        'https://cf.shopee.co.id/file/691ed29004335e7ab3cf81ebda2497e2_tn',
-                    }}
+                    source={
+                      !sellers_photo
+                        ? {
+                            uri:
+                              'https://haes.ca/wp-content/plugins/everest-timeline/images/no-image-available.png',
+                          }
+                        : {
+                            uri: `${API_KEY_PHOTO}/customers/${sellers_photo}`,
+                          }
+                    }
                   />
                 </Left>
                 <Body>
-                  <Text style={styles.sellertext}>RajaCell</Text>
+                  <Text style={styles.sellertext}>{sellers_name}</Text>
                 </Body>
               </ListItem>
             </View>
@@ -101,7 +267,7 @@ class Product extends Component {
             <Button style={styles.buttonbeli}>
               <Text style={styles.textbeli}>Beli</Text>
             </Button>
-            <Button style={styles.buttoncart}>
+            <Button style={styles.buttoncart} onPress={this.addCart.bind(this)}>
               <Text style={styles.textcart}>Tambah Ke Keranjang</Text>
             </Button>
           </View>
@@ -121,7 +287,7 @@ const styles = StyleSheet.create({
   image: {
     width: wp('100%'),
     height: hp('45%'),
-    resizeMode: 'stretch',
+    resizeMode: 'cover',
   },
   title: {
     color: 'black',
@@ -247,4 +413,22 @@ const styles = StyleSheet.create({
   viewstok: {flexDirection: 'row', flex: 1},
 });
 
-export default withNavigation(Product);
+const mapStateToProps = state => {
+  return {
+    product: state.product,
+    wishlist: state.wishlist,
+    auth: state.auth,
+    wishlists: state.wishlists,
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  get: url => dispatch(getProduct(url)),
+  getAll: url => dispatch(getWishlists(url)),
+  addWishlist: (url, data) => dispatch(addWishlist(url, data)),
+  delete: url => dispatch(deleteWishlist(url)),
+});
+
+export default withNavigation(
+  connect(mapStateToProps, mapDispatchToProps)(Product),
+);

@@ -1,12 +1,16 @@
 import React, {Component} from 'react';
-import {Text, View} from 'react-native';
+import WishlistProduct from '../components/Wishlist';
+import GoToLogin from '../screens/GoToLogin';
+import {connect} from 'react-redux';
 
-export default class Wishlist extends Component {
+class Wishlist extends Component {
   render() {
-    return (
-      <View>
-        <Text> Wishlist </Text>
-      </View>
-    );
+    return this.props.auth.token ? <WishlistProduct /> : <GoToLogin />;
   }
 }
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+});
+
+export default connect(mapStateToProps)(Wishlist);

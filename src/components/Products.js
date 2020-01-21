@@ -6,6 +6,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {withNavigation} from 'react-navigation';
+import {API_KEY_PHOTO} from 'react-native-dotenv';
 
 const Products = props => {
   const {item, navigation} = props;
@@ -14,22 +15,28 @@ const Products = props => {
       <TouchableOpacity
         onPress={() =>
           navigation.navigate('Product', {
-            product: item,
+            id_product: item.id,
           })
         }>
         <View style={styles.view}>
           <Image
             style={styles.image}
-            source={{
-              uri:
-                'https://www.amwaytoday.co.id/kesehatan/info-produk/Bigger-is-Better.img.png/1567420073429.png',
-            }}
+            source={
+              !item.photo
+                ? {
+                    uri:
+                      'https://haes.ca/wp-content/plugins/everest-timeline/images/no-image-available.png',
+                  }
+                : {
+                    uri: `${API_KEY_PHOTO}/product/${item.photo}`,
+                  }
+            }
           />
           <Text style={styles.textname} numberOfLines={2} ellipsizeMode="tail">
             {item.name}
           </Text>
           <NumberFormat
-            value={item.code}
+            value={item.price}
             displayType={'text'}
             thousandSeparator={true}
             prefix={'Rp. '}
@@ -52,7 +59,7 @@ const styles = StyleSheet.create({
   image: {
     width: wp('46.5%'),
     height: hp('25%'),
-    resizeMode: 'stretch',
+    resizeMode: 'cover',
     borderTopLeftRadius: wp('3%'),
     borderTopRightRadius: wp('3%'),
   },
@@ -68,6 +75,7 @@ const styles = StyleSheet.create({
     marginLeft: wp('2.5%'),
     position: 'absolute',
     bottom: hp('1%'),
+    color: '#E5511B',
   },
 });
 

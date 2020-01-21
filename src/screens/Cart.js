@@ -1,12 +1,16 @@
 import React, {Component} from 'react';
-import {Text, View} from 'react-native';
+import CartList from '../components/Cart';
+import GoToLogin from '../screens/GoToLogin';
+import {connect} from 'react-redux';
 
-export default class Cart extends Component {
+class Cart extends Component {
   render() {
-    return (
-      <View>
-        <Text> Cart </Text>
-      </View>
-    );
+    return this.props.auth.token ? <CartList /> : <GoToLogin />;
   }
 }
+
+const mapStateToProps = state => ({
+  auth: state.auth,
+});
+
+export default connect(mapStateToProps)(Cart);

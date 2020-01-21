@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, TouchableOpacity} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {
   Header,
   Body,
@@ -9,6 +9,7 @@ import {
   Right,
   Radio,
   Text,
+  Button,
 } from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {
@@ -18,12 +19,18 @@ import {
 import {withNavigation, SafeAreaView} from 'react-navigation';
 
 class Sort extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      itemSelected: 'nama_asc',
+      itemSelected: 'name_asc',
     };
   }
+
+  onSort = () => {
+    this.props.navigation.push('BottomNavbar', {
+      sortValue: this.state.itemSelected,
+    });
+  };
 
   render() {
     return (
@@ -39,51 +46,73 @@ class Sort extends Component {
           </Body>
         </Header>
         <SafeAreaView style={styles.body}>
-          <ListItem onPress={() => this.setState({itemSelected: 'nama_asc'})}>
+          <ListItem onPress={() => this.setState({itemSelected: 'name/asc'})}>
             <Left>
               <Text>Nama Produk A - Z</Text>
             </Left>
             <Right>
               <Radio
-                onPress={() => this.setState({itemSelected: 'nama_asc'})}
-                selected={this.state.itemSelected === 'nama_asc'}
+                onPress={() => this.setState({itemSelected: 'name/asc'})}
+                selected={this.state.itemSelected === 'name/asc'}
               />
             </Right>
           </ListItem>
-          <ListItem onPress={() => this.setState({itemSelected: 'nama_desc'})}>
+          <ListItem onPress={() => this.setState({itemSelected: 'name/desc'})}>
             <Left>
               <Text>Nama Produk Z - A</Text>
             </Left>
             <Right>
               <Radio
-                onPress={() => this.setState({itemSelected: 'nama_desc'})}
-                selected={this.state.itemSelected === 'nama_desc'}
+                onPress={() => this.setState({itemSelected: 'name/desc'})}
+                selected={this.state.itemSelected === 'name/desc'}
               />
             </Right>
           </ListItem>
-          <ListItem onPress={() => this.setState({itemSelected: 'harga_asc'})}>
+          <ListItem
+            onPress={() => this.setState({itemSelected: 'date_updated/desc'})}>
+            <Left>
+              <Text>Terbaru</Text>
+            </Left>
+            <Right>
+              <Radio
+                onPress={() =>
+                  this.setState({itemSelected: 'date_updated/desc'})
+                }
+                selected={this.state.itemSelected === 'date_updated/desc'}
+              />
+            </Right>
+          </ListItem>
+          <ListItem onPress={() => this.setState({itemSelected: 'price/asc'})}>
             <Left>
               <Text>Harga Terendah</Text>
             </Left>
             <Right>
               <Radio
-                onPress={() => this.setState({itemSelected: 'harga_asc'})}
-                selected={this.state.itemSelected === 'harga_asc'}
+                onPress={() => this.setState({itemSelected: 'price/asc'})}
+                selected={this.state.itemSelected === 'price/asc'}
               />
             </Right>
           </ListItem>
-          <ListItem onPress={() => this.setState({itemSelected: 'harga_desc'})}>
+          <ListItem onPress={() => this.setState({itemSelected: 'price/desc'})}>
             <Left>
               <Text>Harga Tertinggi</Text>
             </Left>
             <Right>
               <Radio
-                onPress={() => this.setState({itemSelected: 'harga_desc'})}
-                selected={this.state.itemSelected === 'harga_desc'}
+                onPress={() => this.setState({itemSelected: 'price/desc'})}
+                selected={this.state.itemSelected === 'price/desc'}
               />
             </Right>
           </ListItem>
         </SafeAreaView>
+        <View style={styles.viewbottom}>
+          <Button
+            success
+            style={styles.button}
+            onPress={this.onSort.bind(this)}>
+            <Text style={styles.textbutton}>Tampilkan Produk</Text>
+          </Button>
+        </View>
       </>
     );
   }
@@ -104,6 +133,25 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginLeft: wp('2%'),
+  },
+  viewbottom: {
+    height: hp('10%'),
+    width: wp('100%'),
+    backgroundColor: '#fff',
+    position: 'absolute',
+    bottom: hp('0%'),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  button: {
+    width: wp('95%'),
+    height: hp('6.5'),
+    borderRadius: wp('2%'),
+    justifyContent: 'center',
+  },
+  textbutton: {
+    color: '#fff',
+    fontSize: wp('5%'),
   },
 });
 

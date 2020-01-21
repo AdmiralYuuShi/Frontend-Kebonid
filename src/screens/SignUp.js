@@ -1,5 +1,6 @@
 import React from 'react';
 import SignUpUser from '../components/SignUp'
+import {connect} from 'react-redux';
 
 const SignUp = () => {
     return (
@@ -7,4 +8,8 @@ const SignUp = () => {
     )
 }
 
-export default SignUp
+const mapStateToProps = state => ({
+    user: state.auth.user,
+  });
+  
+  export default connect(mapStateToProps)(SignUp);
