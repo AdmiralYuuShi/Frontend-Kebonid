@@ -1,6 +1,6 @@
 <h1 align="center">Kebon.Id App</h1>
 <p align="center">
-  <img width="250" src="./src/public/assets/logo_transparent.png"/>
+  <img width="250" src="./src/assets/logo_transparent.png"/>
   <img width="250" src="./screenshoot/native.png">
 </p>
 <p align="center">
