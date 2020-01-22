@@ -95,8 +95,39 @@ API_KEY_PHOTO=YOUR_HOST_PHOTO
 
 ## Contributors
 
-1. <a href="https://github.com/AdmiralYuuShi"><img src="https://avatars1.githubusercontent.com/u/47265524?s=400&v=4" title="AdmiralYuuShi" width="50" height="50"></a> Hapid Moch Jamil
-2. <a href="https://github.com/alfatahh54"><img src="https://avatars3.githubusercontent.com/u/55615664?s=400&v=4" title="alfatahh54" width="50" height="50"></a> Alfatah Hidayat
-3. <a href="https://github.com/kurniawandenyy"><img src="https://avatars0.githubusercontent.com/u/48039021?s=400&v=4" title="kurniawandenyy" width="50" height="50"></a> Deny Kurniawan
-4. <a href="https://github.com/ihsan2"><img src="https://avatars1.githubusercontent.com/u/39041267?s=400&u=6dc608d72a78f0fde1d830f5e99f9a6020558c25&v=4" title="ihsan2" width="50" height="50"></a> Nur Ihsan
-5. <a href="https://github.com/vikavp"><img src="https://avatars2.githubusercontent.com/u/52590370?s=400&v=4" title="vikavp" width="50" height="50"></a> Vika Vitaloka Pramansah
+<center>
+  <table>
+    <tr>
+      <td align="center">
+        <a href="https://github.com/kurniawandenyy">
+          <img width="100" src="https://avatars1.githubusercontent.com/u/48039021?s=460&v=4" alt="Deny Kurniawan"><br/>
+          <sub><b>Deny Kurniawan</b></sub>
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/AdmiralYuuShi">
+          <img width="100" src="https://avatars0.githubusercontent.com/u/47265524?s=460&v=4" alt="Hapid Moch Jamil"><br/>
+          <sub><b>Hapid Moch Jamil</b></sub>
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/ihsan2">
+          <img width="100" src="https://avatars1.githubusercontent.com/u/39041267?s=460&v=4" alt="Nur Ihsan"><br/>
+          <sub><b>Nur Ihsan</b></sub>
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/alfatahh54">
+          <img width="100" src="https://avatars2.githubusercontent.com/u/55615664?s=460&v=4" alt="Alfatah Hidayat"><br/>
+          <sub><b>Alfatah Hidayat</b></sub>
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/VikaVP">
+          <img width="100" src="https://avatars3.githubusercontent.com/u/52590370?s=460&v=4" alt="Vika Vitaloka P"><br/>
+          <sub><b>Vika Vitaloka P</b></sub>
+        </a>
+      </td>
+    </tr>
+  </table>
+</center>
